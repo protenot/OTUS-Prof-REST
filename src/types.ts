@@ -7,3 +7,12 @@ export type UsersType = {
 };
 
 export type PartialUsersType = Omit<UsersType, "id">;
+
+export type TasksType = {
+  id: string;
+  description: string;
+  solution: string;
+  complexity: number;
+  language: string;
+  tag: string;
+};

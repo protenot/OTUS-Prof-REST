@@ -6,37 +6,40 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
+const db_1 = require("./db");
 const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json());
-let USERS = [
-    {
-        id: (0, uuid_1.v4)(),
-        name: "Olga",
-        surname: "Belaya",
-        email: "protenot@gmail.com",
-        role: "User",
-    },
-];
 const createUser = (user) => {
     const userId = (0, uuid_1.v4)();
     const newUser = Object.assign({ id: userId }, user);
-    USERS.push(newUser);
+    db_1.USERS.push(newUser);
     return newUser;
 };
 app.get("/", (req, res) => {
     res.sendFile(path_1.default.resolve(__dirname, "index.html"));
 });
 app.get("/users", (req, res) => {
-    res.json(USERS);
+    res.json(db_1.USERS);
 });
 app.get("/users/:id", (req, res) => {
-    const foundUser = USERS.find((c) => c.id === req.params.id);
+    const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
     if (!foundUser) {
         res.sendStatus(404);
         return;
     }
     res.json(foundUser);
+});
+app.get("/tasks", (req, res) => {
+    res.json(db_1.TASKS);
+});
+app.get("/tasks/:id", (req, res) => {
+    const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
+    if (!foundTask) {
+        res.sendStatus(404);
+        return;
+    }
+    res.json(foundTask);
 });
 app.post("/users", (req, res) => {
     const newUser = createUser({
@@ -46,14 +49,20 @@ app.post("/users", (req, res) => {
         role: "Admin",
     });
     console.log(newUser);
-    res.status(201).json(USERS);
+    res.status(201).json(db_1.USERS);
 });
 app.delete("/users/:id", (req, res) => {
-    USERS = USERS.filter((c) => c.id !== req.params.id);
-    res.status(200).json({ message: "User deleted" });
+    const updatedUsers = db_1.USERS.filter((c) => c.id !== req.params.id);
+    (0, db_1.updateUserList)(updatedUsers);
+    res.status(200).json({ message: `User '${req.params.id}' deleted` });
+});
+app.delete("/tasks/:id", (req, res) => {
+    const updatedTasks = db_1.TASKS.filter((c) => c.id !== req.params.id);
+    (0, db_1.updateTasksList)(updatedTasks);
+    res.status(200).json({ message: `Task '${req.params.id}' deleted` });
 });
 app.put("/users/:id", (req, res) => {
-    const foundUser = USERS.find((c) => c.id === req.params.id);
+    const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
     if (!foundUser) {
         res.sendStatus(404);
         return;
@@ -63,6 +72,19 @@ app.put("/users/:id", (req, res) => {
     foundUser.email = req.body.email;
     foundUser.role = req.body.role;
     res.json(foundUser);
+});
+app.put("/tasks/:id", (req, res) => {
+    const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
+    if (!foundTask) {
+        res.sendStatus(404);
+        return;
+    }
+    foundTask.description = req.body.description;
+    foundTask.solution = req.body.solution;
+    foundTask.complexity = req.body.complexity;
+    foundTask.language = req.body.language;
+    foundTask.tag = req.body.tag;
+    res.json(foundTask);
 });
 app.listen(port, () => {
     console.log(`App listening port ${port}`);

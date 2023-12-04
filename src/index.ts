@@ -2,20 +2,12 @@ import express from "express";
 import path from "path";
 import { v4 } from "uuid";
 import { UsersType, PartialUsersType } from "./types";
+import { TASKS, USERS, updateUserList, updateTasksList } from "./db";
 const app = express();
 const port = 3000;
 
 app.use(express.json());
 
-let USERS: UsersType[] = [
-  {
-    id: v4(),
-    name: "Olga",
-    surname: "Belaya",
-    email: "protenot@gmail.com",
-    role: "User",
-  },
-];
 const createUser = (user: PartialUsersType): UsersType => {
   const userId: string = v4();
   const newUser: UsersType = {
@@ -39,6 +31,18 @@ app.get("/users/:id", (req, res) => {
   }
   res.json(foundUser);
 });
+app.get("/tasks", (req, res) => {
+  res.json(TASKS);
+});
+app.get("/tasks/:id", (req, res) => {
+  const foundTask = TASKS.find((c) => c.id === req.params.id);
+  if (!foundTask) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundTask);
+});
+
 app.post("/users", (req, res) => {
   const newUser = createUser({
     name: req.body.name,
@@ -52,8 +56,15 @@ app.post("/users", (req, res) => {
 });
 
 app.delete("/users/:id", (req, res) => {
-  USERS = USERS.filter((c) => c.id !== req.params.id);
-  res.status(200).json({ message: "User deleted" });
+  const updatedUsers = USERS.filter((c) => c.id !== req.params.id);
+  updateUserList(updatedUsers);
+  res.status(200).json({ message: `User '${req.params.id}' deleted` });
+});
+
+app.delete("/tasks/:id", (req, res) => {
+  const updatedTasks = TASKS.filter((c) => c.id !== req.params.id);
+  updateTasksList(updatedTasks);
+  res.status(200).json({ message: `Task '${req.params.id}' deleted` });
 });
 
 app.put("/users/:id", (req, res) => {
@@ -68,6 +79,20 @@ app.put("/users/:id", (req, res) => {
   foundUser.role = req.body.role;
   res.json(foundUser);
 });
+app.put("/tasks/:id", (req, res) => {
+  const foundTask = TASKS.find((c) => c.id === req.params.id);
+  if (!foundTask) {
+    res.sendStatus(404);
+    return;
+  }
+  foundTask.description = req.body.description;
+  foundTask.solution = req.body.solution;
+  foundTask.complexity = req.body.complexity;
+  foundTask.language = req.body.language;
+  foundTask.tag = req.body.tag;
+  res.json(foundTask);
+});
+
 app.listen(port, () => {
   console.log(`App listening port ${port}`);
 });
