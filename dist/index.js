@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -7,17 +16,20 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
 const db_1 = require("./db");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json());
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
+app.use(express_1.default.urlencoded({ extended: false }));
 const createUser = (user) => {
     const userId = (0, uuid_1.v4)();
     const newUser = Object.assign({ id: userId }, user);
     db_1.USERS.push(newUser);
     return newUser;
 };
+const information = [];
 app.get("/", (req, res) => {
     // res.sendFile(path.resolve(__dirname, "index.html"));
     res.render("index.ejs", { name: "Igor" });
@@ -50,7 +62,22 @@ app.get("/tasks/:id", (req, res) => {
     }
     res.json(foundTask);
 });
-app.post("/register");
+app.post("/login", (req, res) => { });
+app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const hashedPassword = yield bcrypt_1.default.hash(req.body.password, 10);
+        information.push({
+            id: (0, uuid_1.v4)(),
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword,
+        });
+        res.redirect("/login");
+    }
+    catch (_a) {
+        res.redirect("/register");
+    }
+}));
 app.post("/users", (req, res) => {
     const newUser = createUser({
         name: req.body.name,

@@ -3,12 +3,15 @@ import path from "path";
 import { v4 } from "uuid";
 import { UsersType, PartialUsersType } from "./types";
 import { TASKS, USERS, updateUserList, updateTasksList } from "./db";
+import bcrypt from "bcrypt";
+
 const app = express();
 const port = 3000;
 
 app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded({ extended: false }));
 
 const createUser = (user: PartialUsersType): UsersType => {
   const userId: string = v4();
@@ -19,6 +22,7 @@ const createUser = (user: PartialUsersType): UsersType => {
   USERS.push(newUser);
   return newUser;
 };
+const information = [];
 app.get("/", (req, res) => {
   // res.sendFile(path.resolve(__dirname, "index.html"));
   res.render("index.ejs", { name: "Igor" });
@@ -51,7 +55,23 @@ app.get("/tasks/:id", (req, res) => {
   }
   res.json(foundTask);
 });
-app.post("/register");
+app.post("/login", (req, res) => {});
+
+app.post("/register", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    information.push({
+      id: v4(),
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword,
+    });
+    res.redirect("/login");
+  } catch {
+    res.redirect("/register");
+  }
+});
+
 app.post("/users", (req, res) => {
   const newUser = createUser({
     name: req.body.name,
