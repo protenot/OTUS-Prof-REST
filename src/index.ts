@@ -7,6 +7,8 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 const createUser = (user: PartialUsersType): UsersType => {
   const userId: string = v4();
@@ -18,7 +20,14 @@ const createUser = (user: PartialUsersType): UsersType => {
   return newUser;
 };
 app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "index.html"));
+  // res.sendFile(path.resolve(__dirname, "index.html"));
+  res.render("index.ejs", { name: "Igor" });
+});
+app.get("/login", (req, res) => {
+  res.render("login.ejs");
+});
+app.get("/register", (req, res) => {
+  res.render("register.ejs");
 });
 app.get("/users", (req, res) => {
   res.json(USERS);
@@ -42,7 +51,7 @@ app.get("/tasks/:id", (req, res) => {
   }
   res.json(foundTask);
 });
-
+app.post("/register");
 app.post("/users", (req, res) => {
   const newUser = createUser({
     name: req.body.name,

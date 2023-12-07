@@ -10,6 +10,8 @@ const db_1 = require("./db");
 const app = (0, express_1.default)();
 const port = 3000;
 app.use(express_1.default.json());
+app.set("view engine", "ejs");
+app.set("views", path_1.default.join(__dirname, "views"));
 const createUser = (user) => {
     const userId = (0, uuid_1.v4)();
     const newUser = Object.assign({ id: userId }, user);
@@ -17,7 +19,14 @@ const createUser = (user) => {
     return newUser;
 };
 app.get("/", (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, "index.html"));
+    // res.sendFile(path.resolve(__dirname, "index.html"));
+    res.render("index.ejs", { name: "Igor" });
+});
+app.get("/login", (req, res) => {
+    res.render("login.ejs");
+});
+app.get("/register", (req, res) => {
+    res.render("register.ejs");
 });
 app.get("/users", (req, res) => {
     res.json(db_1.USERS);
@@ -41,6 +50,7 @@ app.get("/tasks/:id", (req, res) => {
     }
     res.json(foundTask);
 });
+app.post("/register");
 app.post("/users", (req, res) => {
     const newUser = createUser({
         name: req.body.name,
