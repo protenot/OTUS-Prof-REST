@@ -2,13 +2,13 @@ import { v4 } from "uuid";
 import { UsersType, PartialUsersType, TasksType } from "./types";
 
 export let USERS: UsersType[] = [
-  {
+  /*  {
     id: v4(),
     name: "Olga",
     surname: "Belaya",
     email: "protenot@gmail.com",
     role: "User",
-  },
+  }, */
 ];
 
 export const updateUserList = (newUsers: UsersType[]) => {

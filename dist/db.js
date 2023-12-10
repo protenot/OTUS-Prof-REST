@@ -1,15 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateTasksList = exports.TASKS = exports.updateUserList = exports.USERS = void 0;
-const uuid_1 = require("uuid");
 exports.USERS = [
-    {
-        id: (0, uuid_1.v4)(),
-        name: "Olga",
-        surname: "Belaya",
-        email: "protenot@gmail.com",
-        role: "User",
-    },
+/*  {
+  id: v4(),
+  name: "Olga",
+  surname: "Belaya",
+  email: "protenot@gmail.com",
+  role: "User",
+}, */
 ];
 const updateUserList = (newUsers) => {
     exports.USERS = newUsers;

@@ -1,9 +1,10 @@
 export type UsersType = {
   id: string;
   name: string;
-  surname: string;
+  surname?: string;
   email: string;
-  role: "Admin" | "User" | "Gest";
+  role?: "Admin" | "User" | "Gest";
+  password?: string;
 };
 
 export type PartialUsersType = Omit<UsersType, "id">;

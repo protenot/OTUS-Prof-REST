@@ -17,35 +17,26 @@ const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
 const db_1 = require("./db");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const passport_1 = __importDefault(require("passport"));
 const express_flash_1 = __importDefault(require("express-flash"));
 const express_session_1 = __importDefault(require("express-session"));
-//import { Strategy as LocalStrategy } from 'passport-local';
-//import {initialize} from "./passport-config"
 const passport_config_1 = __importDefault(require("./passport-config"));
 const method_override_1 = __importDefault(require("method-override"));
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
 const app = (0, express_1.default)();
 const port = 3000;
-//initialize(passport, (email: string) => information.find((user: any) => user.email === email));
-/* const initializePassport= require('./passport-config')
-initializePassport(
-    passport,
-     email => information.find(user=>user.email === email)) */
-(0, passport_config_1.default)(passport, (email) => information.find((user) => user.email === email), (id) => information.find((user) => user.id === id));
+(0, passport_config_1.default)(passport_1.default, (email) => db_1.USERS.find((user) => user.email === email), (id) => db_1.USERS.find((user) => user.id === id));
 app.use(express_1.default.json());
-//console.log(initializePassport(passport, (email: string) => information.find((user: any) => user.email === email)))
 app.use((0, express_flash_1.default)());
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
 }));
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport_1.default.initialize());
+app.use(passport_1.default.session());
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
 app.use(express_1.default.urlencoded({ extended: false }));
@@ -58,14 +49,13 @@ const createUser = (user) => {
 };
 const information = [];
 app.get("/", checkAuthenticated, (req, res) => {
-    // res.sendFile(path.resolve(__dirname, "index.html"));
     res.render("index.ejs", { name: req.user.name });
 });
 app.get("/login", checkNotAuthenticated, (req, res) => {
     console.log("Flash messages:", req.flash("error"));
     res.render("login", { messages: req.flash("error") });
 });
-app.post("/login", passport.authenticate("local", {
+app.post("/login", passport_1.default.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true,
@@ -98,7 +88,7 @@ app.get("/tasks/:id", (req, res) => {
 app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const hashedPassword = yield bcrypt_1.default.hash(req.body.password, 10);
-        information.push({
+        db_1.USERS.push({
             id: (0, uuid_1.v4)(),
             name: req.body.name,
             email: req.body.email,
@@ -113,9 +103,10 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
 app.post("/users", (req, res) => {
     const newUser = createUser({
         name: req.body.name,
-        surname: "UNKNOWN",
-        email: "UNKNOWN",
-        role: "Admin",
+        surname: req.body.surname,
+        email: req.body.email,
+        role: "UNKNOWN",
+        password: req.body.password,
     });
     console.log(newUser);
     res.status(201).json(db_1.USERS);

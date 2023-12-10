@@ -7,12 +7,8 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import flash from "express-flash";
 import session from "express-session";
-//import { Strategy as LocalStrategy } from 'passport-local';
-//import {initialize} from "./passport-config"
 import initializePassport from "./passport-config";
 import methodOverride from "method-override";
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -20,19 +16,14 @@ if (process.env.NODE_ENV !== "production") {
 
 const app = express();
 const port = 3000;
-//initialize(passport, (email: string) => information.find((user: any) => user.email === email));
-/* const initializePassport= require('./passport-config')
-initializePassport(
-    passport,
-     email => information.find(user=>user.email === email)) */
+
 initializePassport(
   passport,
-  (email: string) => information.find((user: any) => user.email === email),
-  (id) => information.find((user) => user.id === id),
+  (email: string) => USERS.find((user: UsersType) => user.email === email),
+  (id) => USERS.find((user: UsersType) => user.id === id),
 );
 app.use(express.json());
 
-//console.log(initializePassport(passport, (email: string) => information.find((user: any) => user.email === email)))
 app.use(flash());
 app.use(
   session({
@@ -60,9 +51,9 @@ const createUser = (user: PartialUsersType): UsersType => {
 };
 const information = [];
 app.get("/", checkAuthenticated, (req, res) => {
-  // res.sendFile(path.resolve(__dirname, "index.html"));
   res.render("index.ejs", { name: req.user.name });
 });
+
 app.get("/login", checkNotAuthenticated, (req, res) => {
   console.log("Flash messages:", req.flash("error"));
   res.render("login", { messages: req.flash("error") });
@@ -105,7 +96,7 @@ app.get("/tasks/:id", (req, res) => {
 app.post("/register", async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    information.push({
+    USERS.push({
       id: v4(),
       name: req.body.name,
       email: req.body.email,
@@ -120,9 +111,10 @@ app.post("/register", async (req, res) => {
 app.post("/users", (req, res) => {
   const newUser = createUser({
     name: req.body.name,
-    surname: "UNKNOWN",
-    email: "UNKNOWN",
-    role: "Admin",
+    surname: req.body.surname,
+    email: req.body.email,
+    role: "UNKNOWN",
+    password: req.body.password,
   });
   console.log(newUser);
 
