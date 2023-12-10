@@ -17,12 +17,39 @@ const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
 const db_1 = require("./db");
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const express_flash_1 = __importDefault(require("express-flash"));
+const express_session_1 = __importDefault(require("express-session"));
+//import { Strategy as LocalStrategy } from 'passport-local';
+//import {initialize} from "./passport-config"
+const passport_config_1 = __importDefault(require("./passport-config"));
+const method_override_1 = __importDefault(require("method-override"));
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
 const app = (0, express_1.default)();
 const port = 3000;
+//initialize(passport, (email: string) => information.find((user: any) => user.email === email));
+/* const initializePassport= require('./passport-config')
+initializePassport(
+    passport,
+     email => information.find(user=>user.email === email)) */
+(0, passport_config_1.default)(passport, (email) => information.find((user) => user.email === email), (id) => information.find((user) => user.id === id));
 app.use(express_1.default.json());
+//console.log(initializePassport(passport, (email: string) => information.find((user: any) => user.email === email)))
+app.use((0, express_flash_1.default)());
+app.use((0, express_session_1.default)({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
 app.use(express_1.default.urlencoded({ extended: false }));
+app.use((0, method_override_1.default)("_method"));
 const createUser = (user) => {
     const userId = (0, uuid_1.v4)();
     const newUser = Object.assign({ id: userId }, user);
@@ -30,14 +57,20 @@ const createUser = (user) => {
     return newUser;
 };
 const information = [];
-app.get("/", (req, res) => {
+app.get("/", checkAuthenticated, (req, res) => {
     // res.sendFile(path.resolve(__dirname, "index.html"));
-    res.render("index.ejs", { name: "Igor" });
+    res.render("index.ejs", { name: req.user.name });
 });
-app.get("/login", (req, res) => {
-    res.render("login.ejs");
+app.get("/login", checkNotAuthenticated, (req, res) => {
+    console.log("Flash messages:", req.flash("error"));
+    res.render("login", { messages: req.flash("error") });
 });
-app.get("/register", (req, res) => {
+app.post("/login", passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+}));
+app.get("/register", checkNotAuthenticated, (req, res) => {
     res.render("register.ejs");
 });
 app.get("/users", (req, res) => {
@@ -62,7 +95,6 @@ app.get("/tasks/:id", (req, res) => {
     }
     res.json(foundTask);
 });
-app.post("/login", (req, res) => { });
 app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const hashedPassword = yield bcrypt_1.default.hash(req.body.password, 10);
@@ -98,6 +130,14 @@ app.delete("/tasks/:id", (req, res) => {
     (0, db_1.updateTasksList)(updatedTasks);
     res.status(200).json({ message: `Task '${req.params.id}' deleted` });
 });
+app.delete("/logout", (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/login");
+    });
+});
 app.put("/users/:id", (req, res) => {
     const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
     if (!foundUser) {
@@ -126,3 +166,15 @@ app.put("/tasks/:id", (req, res) => {
 app.listen(port, () => {
     console.log(`App listening port ${port}`);
 });
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect("/login");
+}
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect("/");
+    }
+    return next();
+}

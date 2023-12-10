@@ -4,14 +4,50 @@ import { v4 } from "uuid";
 import { UsersType, PartialUsersType } from "./types";
 import { TASKS, USERS, updateUserList, updateTasksList } from "./db";
 import bcrypt from "bcrypt";
+import passport from "passport";
+import flash from "express-flash";
+import session from "express-session";
+//import { Strategy as LocalStrategy } from 'passport-local';
+//import {initialize} from "./passport-config"
+import initializePassport from "./passport-config";
+import methodOverride from "method-override";
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
 
 const app = express();
 const port = 3000;
-
+//initialize(passport, (email: string) => information.find((user: any) => user.email === email));
+/* const initializePassport= require('./passport-config')
+initializePassport(
+    passport,
+     email => information.find(user=>user.email === email)) */
+initializePassport(
+  passport,
+  (email: string) => information.find((user: any) => user.email === email),
+  (id) => information.find((user) => user.id === id),
+);
 app.use(express.json());
+
+//console.log(initializePassport(passport, (email: string) => information.find((user: any) => user.email === email)))
+app.use(flash());
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  }),
+);
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
 
 const createUser = (user: PartialUsersType): UsersType => {
   const userId: string = v4();
@@ -23,14 +59,24 @@ const createUser = (user: PartialUsersType): UsersType => {
   return newUser;
 };
 const information = [];
-app.get("/", (req, res) => {
+app.get("/", checkAuthenticated, (req, res) => {
   // res.sendFile(path.resolve(__dirname, "index.html"));
-  res.render("index.ejs", { name: "Igor" });
+  res.render("index.ejs", { name: req.user.name });
 });
-app.get("/login", (req, res) => {
-  res.render("login.ejs");
+app.get("/login", checkNotAuthenticated, (req, res) => {
+  console.log("Flash messages:", req.flash("error"));
+  res.render("login", { messages: req.flash("error") });
 });
-app.get("/register", (req, res) => {
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+);
+
+app.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs");
 });
 app.get("/users", (req, res) => {
@@ -55,7 +101,6 @@ app.get("/tasks/:id", (req, res) => {
   }
   res.json(foundTask);
 });
-app.post("/login", (req, res) => {});
 
 app.post("/register", async (req, res) => {
   try {
@@ -96,6 +141,15 @@ app.delete("/tasks/:id", (req, res) => {
   res.status(200).json({ message: `Task '${req.params.id}' deleted` });
 });
 
+app.delete("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login");
+  });
+});
+
 app.put("/users/:id", (req, res) => {
   const foundUser = USERS.find((c) => c.id === req.params.id);
   if (!foundUser) {
@@ -125,3 +179,15 @@ app.put("/tasks/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`App listening port ${port}`);
 });
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect("/login");
+}
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/");
+  }
+  return next();
+}
