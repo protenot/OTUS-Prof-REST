@@ -22,11 +22,25 @@ const express_flash_1 = __importDefault(require("express-flash"));
 const express_session_1 = __importDefault(require("express-session"));
 const passport_config_1 = __importDefault(require("./passport-config"));
 const method_override_1 = __importDefault(require("method-override"));
+const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const routes_1 = __importDefault(require("./routes"));
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
 const app = (0, express_1.default)();
 const port = 3000;
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "My API",
+            version: "1.0.0",
+        },
+    },
+    apis: ["./src/routes.ts"],
+};
+const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 (0, passport_config_1.default)(passport_1.default, (email) => db_1.USERS.find((user) => user.email === email), (id) => db_1.USERS.find((user) => user.id === id));
 app.use(express_1.default.json());
 app.use((0, express_flash_1.default)());
@@ -41,6 +55,8 @@ app.set("view engine", "ejs");
 app.set("views", path_1.default.join(__dirname, "views"));
 app.use(express_1.default.urlencoded({ extended: false }));
 app.use((0, method_override_1.default)("_method"));
+app.use("/", routes_1.default);
+app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
 const createUser = (user) => {
     const userId = (0, uuid_1.v4)();
     const newUser = Object.assign({ id: userId }, user);

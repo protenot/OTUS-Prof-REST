@@ -9,6 +9,9 @@ import flash from "express-flash";
 import session from "express-session";
 import initializePassport from "./passport-config";
 import methodOverride from "method-override";
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
+import routes from "./routes";
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -16,6 +19,18 @@ if (process.env.NODE_ENV !== "production") {
 
 const app = express();
 const port = 3000;
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "My API",
+      version: "1.0.0",
+    },
+  },
+  apis: ["./src/routes.ts"],
+};
+
+const swaggerSpec = swaggerJsdoc(options);
 
 initializePassport(
   passport,
@@ -39,6 +54,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
+app.use("/", routes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const createUser = (user: PartialUsersType): UsersType => {
   const userId: string = v4();
