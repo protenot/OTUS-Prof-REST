@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction } from "express";
 import path from "path";
 import { v4 } from "uuid";
 import { UsersType, PartialUsersType } from "./types";
@@ -35,14 +35,14 @@ const swaggerSpec = swaggerJsdoc(options);
 initializePassport(
   passport,
   (email: string) => USERS.find((user: UsersType) => user.email === email),
-  (id) => USERS.find((user: UsersType) => user.id === id),
+  (id: string) => USERS.find((user: UsersType) => user.id === id),
 );
 app.use(express.json());
 
 app.use(flash());
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: false,
   }),
@@ -68,7 +68,12 @@ const createUser = (user: PartialUsersType): UsersType => {
 };
 const information = [];
 app.get("/", checkAuthenticated, (req, res) => {
-  res.render("index.ejs", { name: req.user.name });
+  if (req.user) {
+    const { name } = req.user as UsersType;
+    res.render("index.ejs", { name });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/login", checkNotAuthenticated, (req, res) => {
@@ -130,7 +135,7 @@ app.post("/users", (req, res) => {
     name: req.body.name,
     surname: req.body.surname,
     email: req.body.email,
-    role: "UNKNOWN",
+    role: "User",
     password: req.body.password,
   });
   console.log(newUser);
@@ -150,7 +155,7 @@ app.delete("/tasks/:id", (req, res) => {
   res.status(200).json({ message: `Task '${req.params.id}' deleted` });
 });
 
-app.delete("/logout", (req, res) => {
+app.delete("/logout", (req, res, next: NextFunction) => {
   req.logout((err) => {
     if (err) {
       return next(err);
@@ -188,13 +193,13 @@ app.put("/tasks/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`App listening port ${port}`);
 });
-function checkAuthenticated(req, res, next) {
+function checkAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return next();
   }
   res.redirect("/login");
 }
-function checkNotAuthenticated(req, res, next) {
+function checkNotAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return res.redirect("/");
   }
