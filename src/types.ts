@@ -3,7 +3,7 @@ export type UsersType = {
   name: string;
   surname?: string;
   email: string;
-  role?: "Admin" | "User" | "Gest";
+  role?: "Admin" | "User" | "Interviewer";
   password?: string;
 };
 

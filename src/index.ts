@@ -150,9 +150,14 @@ app.delete("/users/:id", (req, res) => {
 });
 
 app.delete("/tasks/:id", (req, res) => {
-  const updatedTasks = TASKS.filter((c) => c.id !== req.params.id);
-  updateTasksList(updatedTasks);
-  res.status(200).json({ message: `Task '${req.params.id}' deleted` });
+  const user = req.user as UsersType;
+  if (user && user.role === "Interviewer") {
+    const updatedTasks = TASKS.filter((c) => c.id !== req.params.id);
+    updateTasksList(updatedTasks);
+    res.status(200).json({ message: `Task '${req.params.id}' deleted` });
+  } else {
+    res.status(403).json({ message: "Permission denied" });
+  }
 });
 
 app.delete("/logout", (req, res, next: NextFunction) => {
