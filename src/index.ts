@@ -66,7 +66,7 @@ const createUser = (user: PartialUsersType): UsersType => {
   USERS.push(newUser);
   return newUser;
 };
-const information = [];
+//const information = [];
 app.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {
     const { name } = req.user as UsersType;
@@ -198,7 +198,7 @@ app.put("/tasks/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`App listening port ${port}`);
 });
-function checkAuthenticated(req: any, res: any, next: any) {
+export function checkAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return next();
   }
