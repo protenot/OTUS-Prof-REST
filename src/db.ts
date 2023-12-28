@@ -2,13 +2,13 @@ import { v4 } from "uuid";
 import { UsersType, PartialUsersType, TasksType, CommentsType } from "./types";
 
 export let USERS: UsersType[] = [
-   {
-    id:'1',
+  {
+    id: "1",
     name: "Olga",
     surname: "Belaya",
     email: "protenot@gmail.com",
     role: "User",
-  }, 
+  },
 ];
 
 export const updateUserList = (newUsers: UsersType[]) => {
@@ -45,17 +45,17 @@ export let TASKS: TasksType[] = [
 export const updateTasksList = (newTasks: TasksType[]) => {
   TASKS = newTasks;
 };
-export let comments:CommentsType[]=[
+export let COMMENTS: CommentsType[] = [
   {
-    id:"15",
-  idUser: '1',
-  idTask: '12345',
-  commentText: "Это комментарий к задаче 12345" 
+    id: "15",
+    idUser: "1",
+    idTask: "12345",
+    commentText: "Это комментарий к задаче 12345",
   },
   {
-    id:"15",
-  idUser: '1',
-  idTask: '12346',
-  commentText: "Это комментарий к задаче 12346" 
+    id: "16",
+    idUser: "1",
+    idTask: "12346",
+    commentText: "Это комментарий к задаче 12346",
   },
-]
+];

@@ -1,14 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateTasksList = exports.TASKS = exports.updateUserList = exports.USERS = void 0;
+exports.COMMENTS = exports.updateTasksList = exports.TASKS = exports.updateUserList = exports.USERS = void 0;
 exports.USERS = [
-/*  {
-  id: v4(),
-  name: "Olga",
-  surname: "Belaya",
-  email: "protenot@gmail.com",
-  role: "User",
-}, */
+    {
+        id: "1",
+        name: "Olga",
+        surname: "Belaya",
+        email: "protenot@gmail.com",
+        role: "User",
+    },
 ];
 const updateUserList = (newUsers) => {
     exports.USERS = newUsers;
@@ -44,3 +44,17 @@ const updateTasksList = (newTasks) => {
     exports.TASKS = newTasks;
 };
 exports.updateTasksList = updateTasksList;
+exports.COMMENTS = [
+    {
+        id: "15",
+        idUser: "1",
+        idTask: "12345",
+        commentText: "Это комментарий к задаче 12345",
+    },
+    {
+        id: "16",
+        idUser: "1",
+        idTask: "12346",
+        commentText: "Это комментарий к задаче 12346",
+    },
+];

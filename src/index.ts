@@ -2,7 +2,7 @@ import express, { NextFunction } from "express";
 import path from "path";
 import { v4 } from "uuid";
 import { UsersType, PartialUsersType, CommentsType } from "./types";
-import { TASKS, USERS,comments, updateUserList, updateTasksList } from "./db";
+import { TASKS, USERS, COMMENTS, updateUserList, updateTasksList } from "./db";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import flash from "express-flash";
@@ -12,7 +12,6 @@ import methodOverride from "method-override";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes";
-
 
 import { AnyMxRecord } from "dns";
 
@@ -42,7 +41,6 @@ initializePassport(
 );
 app.use(express.json());
 
-
 app.use(flash());
 app.use(
   session({
@@ -70,6 +68,8 @@ const createUser = (user: PartialUsersType): UsersType => {
   USERS.push(newUser);
   return newUser;
 };
+
+//const createComment = (comment:string)
 //const information = [];
 app.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {
@@ -110,6 +110,7 @@ app.get("/users/:id", (req, res) => {
 app.get("/tasks", (req, res) => {
   res.json(TASKS);
 });
+
 app.get("/tasks/:id", (req, res) => {
   const foundTask = TASKS.find((c) => c.id === req.params.id);
   if (!foundTask) {
@@ -118,9 +119,7 @@ app.get("/tasks/:id", (req, res) => {
   }
   res.json(foundTask);
 });
-app.get("/comments", (req, res) => {
-  res.json(comments);
-});
+
 
 app.post("/register", async (req, res) => {
   try {
@@ -203,7 +202,31 @@ app.put("/tasks/:id", (req, res) => {
 });
 
 //CRUDE для комментариев
+app.get("/comments", (req, res) => {
+const idUser = req.query.idUser as string;
+const idTask = req.query.idTask as string
 
+let filteredComments = COMMENTS;
+if (idUser){
+  filteredComments=filteredComments.filter(comment =>comment.idUser===idUser)
+}
+
+if (idTask){
+  filteredComments=filteredComments.filter(comment =>comment.idTask===idTask)
+}
+
+  res.json(filteredComments);
+});
+
+app.get('/comments/:id', (req, res)=>{
+const id = req.params.id;
+const taskComments = COMMENTS.filter(comment=>comment.id===id)
+res.json(taskComments)
+})
+
+app.put('/comments',(req,res)=>{
+  //const {idUser,idTas,comment}
+})
 
 app.listen(port, () => {
   console.log(`App listening port ${port}`);
@@ -220,5 +243,4 @@ export function checkNotAuthenticated(req: any, res: any, next: any) {
   }
   return next();
 }
-//CRUDE для комментариев
 

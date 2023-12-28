@@ -22,7 +22,6 @@ describe("GET /", () => {
       next();
     });
 
-   
     app.get("/", authenticateUser, checkAuthenticated, (req, res) => {
       if (req.user) {
         const { name } = req.user as UsersType;
@@ -31,8 +30,6 @@ describe("GET /", () => {
         res.redirect("/login");
       }
     });
-
- 
 
     await supertest(app)
       .get("/")
@@ -51,7 +48,6 @@ describe("GET /", () => {
 
 describe("GET /tasks", () => {
   it("should return a list of tasks", async () => {
-    
     const response = await supertest(app).get("/tasks");
 
     expect(response.status).toBe(200);
@@ -61,13 +57,11 @@ describe("GET /tasks", () => {
 });
 
 describe("GET /register", () => {
-    it(" should respond with 200 status and render register.ejs when not authenticated", async () => {
-        await supertest(app)
-        .get("/register")
-        .expect(200)
-       /*  .expect("Content-Type", /text\/html/)
+  it(" should respond with 200 status and render register.ejs when not authenticated", async () => {
+    await supertest(app).get("/register").expect(200);
+    /*  .expect("Content-Type", /text\/html/)
         .then(( res) => {
           console.log("+++++++"+res.body);
         }); */
-    })
   });
+});

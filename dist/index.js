@@ -12,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkNotAuthenticated = exports.checkAuthenticated = exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
@@ -28,7 +29,7 @@ const routes_1 = __importDefault(require("./routes"));
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
-const app = (0, express_1.default)();
+exports.app = (0, express_1.default)();
 const port = 3000;
 const options = {
     definition: {
@@ -42,47 +43,54 @@ const options = {
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 (0, passport_config_1.default)(passport_1.default, (email) => db_1.USERS.find((user) => user.email === email), (id) => db_1.USERS.find((user) => user.id === id));
-app.use(express_1.default.json());
-app.use((0, express_flash_1.default)());
-app.use((0, express_session_1.default)({
+exports.app.use(express_1.default.json());
+exports.app.use((0, express_flash_1.default)());
+exports.app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
 }));
-app.use(passport_1.default.initialize());
-app.use(passport_1.default.session());
-app.set("view engine", "ejs");
-app.set("views", path_1.default.join(__dirname, "views"));
-app.use(express_1.default.urlencoded({ extended: false }));
-app.use((0, method_override_1.default)("_method"));
-app.use("/", routes_1.default);
-app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
+exports.app.use(passport_1.default.initialize());
+exports.app.use(passport_1.default.session());
+exports.app.set("view engine", "ejs");
+exports.app.set("views", path_1.default.join(__dirname, "views"));
+exports.app.use(express_1.default.urlencoded({ extended: false }));
+exports.app.use((0, method_override_1.default)("_method"));
+exports.app.use("/", routes_1.default);
+exports.app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
 const createUser = (user) => {
     const userId = (0, uuid_1.v4)();
     const newUser = Object.assign({ id: userId }, user);
     db_1.USERS.push(newUser);
     return newUser;
 };
-const information = [];
-app.get("/", checkAuthenticated, (req, res) => {
-    res.render("index.ejs", { name: req.user.name });
+//const createComment = (comment:string)
+//const information = [];
+exports.app.get("/", checkAuthenticated, (req, res) => {
+    if (req.user) {
+        const { name } = req.user;
+        res.render("index.ejs", { name });
+    }
+    else {
+        res.redirect("/login");
+    }
 });
-app.get("/login", checkNotAuthenticated, (req, res) => {
+exports.app.get("/login", checkNotAuthenticated, (req, res) => {
     console.log("Flash messages:", req.flash("error"));
     res.render("login", { messages: req.flash("error") });
 });
-app.post("/login", passport_1.default.authenticate("local", {
+exports.app.post("/login", passport_1.default.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true,
 }));
-app.get("/register", checkNotAuthenticated, (req, res) => {
+exports.app.get("/register", checkNotAuthenticated, (req, res) => {
     res.render("register.ejs");
 });
-app.get("/users", (req, res) => {
+exports.app.get("/users", (req, res) => {
     res.json(db_1.USERS);
 });
-app.get("/users/:id", (req, res) => {
+exports.app.get("/users/:id", (req, res) => {
     const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
     if (!foundUser) {
         res.sendStatus(404);
@@ -90,10 +98,10 @@ app.get("/users/:id", (req, res) => {
     }
     res.json(foundUser);
 });
-app.get("/tasks", (req, res) => {
+exports.app.get("/tasks", (req, res) => {
     res.json(db_1.TASKS);
 });
-app.get("/tasks/:id", (req, res) => {
+exports.app.get("/tasks/:id", (req, res) => {
     const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
     if (!foundTask) {
         res.sendStatus(404);
@@ -101,7 +109,7 @@ app.get("/tasks/:id", (req, res) => {
     }
     res.json(foundTask);
 });
-app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const hashedPassword = yield bcrypt_1.default.hash(req.body.password, 10);
         db_1.USERS.push({
@@ -116,28 +124,34 @@ app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.redirect("/register");
     }
 }));
-app.post("/users", (req, res) => {
+exports.app.post("/users", (req, res) => {
     const newUser = createUser({
         name: req.body.name,
         surname: req.body.surname,
         email: req.body.email,
-        role: "UNKNOWN",
+        role: "User",
         password: req.body.password,
     });
     console.log(newUser);
     res.status(201).json(db_1.USERS);
 });
-app.delete("/users/:id", (req, res) => {
+exports.app.delete("/users/:id", (req, res) => {
     const updatedUsers = db_1.USERS.filter((c) => c.id !== req.params.id);
     (0, db_1.updateUserList)(updatedUsers);
     res.status(200).json({ message: `User '${req.params.id}' deleted` });
 });
-app.delete("/tasks/:id", (req, res) => {
-    const updatedTasks = db_1.TASKS.filter((c) => c.id !== req.params.id);
-    (0, db_1.updateTasksList)(updatedTasks);
-    res.status(200).json({ message: `Task '${req.params.id}' deleted` });
+exports.app.delete("/tasks/:id", (req, res) => {
+    const user = req.user;
+    if (user && user.role === "Interviewer") {
+        const updatedTasks = db_1.TASKS.filter((c) => c.id !== req.params.id);
+        (0, db_1.updateTasksList)(updatedTasks);
+        res.status(200).json({ message: `Task '${req.params.id}' deleted` });
+    }
+    else {
+        res.status(403).json({ message: "Permission denied" });
+    }
 });
-app.delete("/logout", (req, res) => {
+exports.app.delete("/logout", (req, res, next) => {
     req.logout((err) => {
         if (err) {
             return next(err);
@@ -145,7 +159,7 @@ app.delete("/logout", (req, res) => {
         res.redirect("/login");
     });
 });
-app.put("/users/:id", (req, res) => {
+exports.app.put("/users/:id", (req, res) => {
     const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
     if (!foundUser) {
         res.sendStatus(404);
@@ -157,7 +171,7 @@ app.put("/users/:id", (req, res) => {
     foundUser.role = req.body.role;
     res.json(foundUser);
 });
-app.put("/tasks/:id", (req, res) => {
+exports.app.put("/tasks/:id", (req, res) => {
     const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
     if (!foundTask) {
         res.sendStatus(404);
@@ -170,7 +184,28 @@ app.put("/tasks/:id", (req, res) => {
     foundTask.tag = req.body.tag;
     res.json(foundTask);
 });
-app.listen(port, () => {
+//CRUDE для комментариев
+exports.app.get("/comments", (req, res) => {
+    const idUser = req.query.idUser;
+    const idTask = req.query.idTask;
+    let filteredComments = db_1.COMMENTS;
+    if (idUser) {
+        filteredComments = filteredComments.filter(comment => comment.idUser === idUser);
+    }
+    if (idTask) {
+        filteredComments = filteredComments.filter(comment => comment.idTask === idTask);
+    }
+    res.json(filteredComments);
+});
+exports.app.get('/comments/:id', (req, res) => {
+    const id = req.params.id;
+    const taskComments = db_1.COMMENTS.filter(comment => comment.id === id);
+    res.json(taskComments);
+});
+exports.app.put('/comments', (req, res) => {
+    //const {idUser,idTas,comment}
+});
+exports.app.listen(port, () => {
     console.log(`App listening port ${port}`);
 });
 function checkAuthenticated(req, res, next) {
@@ -179,9 +214,11 @@ function checkAuthenticated(req, res, next) {
     }
     res.redirect("/login");
 }
+exports.checkAuthenticated = checkAuthenticated;
 function checkNotAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return res.redirect("/");
     }
     return next();
 }
+exports.checkNotAuthenticated = checkNotAuthenticated;

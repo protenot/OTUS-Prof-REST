@@ -18,8 +18,13 @@ export type TasksType = {
   tag: string;
 };
 export type CommentsType = {
-  id:string;
+  id: string;
   idUser: string;
   idTask: string;
-  commentText: string
+  commentText: string;
+};
+export type NewCommentType ={
+  idUser: string;
+  idTask: string;
+  commentText: string;
 }
