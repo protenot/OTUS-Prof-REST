@@ -17,3 +17,9 @@ export type TasksType = {
   language: string;
   tag: string;
 };
+export type CommentsType = {
+  id:string;
+  idUser: string;
+  idTask: string;
+  commentText: string
+}

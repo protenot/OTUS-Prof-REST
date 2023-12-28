@@ -1,14 +1,14 @@
 import { v4 } from "uuid";
-import { UsersType, PartialUsersType, TasksType } from "./types";
+import { UsersType, PartialUsersType, TasksType, CommentsType } from "./types";
 
 export let USERS: UsersType[] = [
-  /*  {
-    id: v4(),
+   {
+    id:'1',
     name: "Olga",
     surname: "Belaya",
     email: "protenot@gmail.com",
     role: "User",
-  }, */
+  }, 
 ];
 
 export const updateUserList = (newUsers: UsersType[]) => {
@@ -45,3 +45,17 @@ export let TASKS: TasksType[] = [
 export const updateTasksList = (newTasks: TasksType[]) => {
   TASKS = newTasks;
 };
+export let comments:CommentsType[]=[
+  {
+    id:"15",
+  idUser: '1',
+  idTask: '12345',
+  commentText: "Это комментарий к задаче 12345" 
+  },
+  {
+    id:"15",
+  idUser: '1',
+  idTask: '12346',
+  commentText: "Это комментарий к задаче 12346" 
+  },
+]

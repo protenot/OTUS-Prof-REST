@@ -1,8 +1,8 @@
 import express, { NextFunction } from "express";
 import path from "path";
 import { v4 } from "uuid";
-import { UsersType, PartialUsersType } from "./types";
-import { TASKS, USERS, updateUserList, updateTasksList } from "./db";
+import { UsersType, PartialUsersType, CommentsType } from "./types";
+import { TASKS, USERS,comments, updateUserList, updateTasksList } from "./db";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import flash from "express-flash";
@@ -12,6 +12,8 @@ import methodOverride from "method-override";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes";
+
+
 import { AnyMxRecord } from "dns";
 
 if (process.env.NODE_ENV !== "production") {
@@ -116,6 +118,9 @@ app.get("/tasks/:id", (req, res) => {
   }
   res.json(foundTask);
 });
+app.get("/comments", (req, res) => {
+  res.json(comments);
+});
 
 app.post("/register", async (req, res) => {
   try {
@@ -197,6 +202,9 @@ app.put("/tasks/:id", (req, res) => {
   res.json(foundTask);
 });
 
+//CRUDE для комментариев
+
+
 app.listen(port, () => {
   console.log(`App listening port ${port}`);
 });
@@ -212,3 +220,5 @@ export function checkNotAuthenticated(req: any, res: any, next: any) {
   }
   return next();
 }
+//CRUDE для комментариев
+
