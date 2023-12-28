@@ -12,6 +12,7 @@ import methodOverride from "method-override";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes";
+import { AnyMxRecord } from "dns";
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -38,6 +39,7 @@ initializePassport(
   (id: string) => USERS.find((user: UsersType) => user.id === id),
 );
 app.use(express.json());
+
 
 app.use(flash());
 app.use(
@@ -204,7 +206,7 @@ export function checkAuthenticated(req: any, res: any, next: any) {
   }
   res.redirect("/login");
 }
-function checkNotAuthenticated(req: any, res: any, next: any) {
+export function checkNotAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return res.redirect("/");
   }
