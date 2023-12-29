@@ -1,7 +1,7 @@
 import express, { NextFunction } from "express";
 import path from "path";
 import { v4 } from "uuid";
-import { UsersType, PartialUsersType, CommentsType } from "./types";
+import { UsersType, PartialUsersType, CommentsType, NewCommentType } from "./types";
 import { TASKS, USERS, COMMENTS, updateUserList, updateTasksList } from "./db";
 import bcrypt from "bcrypt";
 import passport from "passport";
@@ -69,7 +69,9 @@ const createUser = (user: PartialUsersType): UsersType => {
   return newUser;
 };
 
-//const createComment = (comment:string)
+const createComment = (comment:CommentsType)=>{
+  COMMENTS.push(comment)
+}
 //const information = [];
 app.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {
@@ -225,7 +227,20 @@ res.json(taskComments)
 })
 
 app.put('/comments',(req,res)=>{
-  //const {idUser,idTas,comment}
+  const {idUser ,idTask ,commentText} = req.body;
+  if(!idUser || idTask||commentText){
+    return res.status(400).json({error: "Необходимо передать idUser, idTask и comment в теле запроса"})
+  }
+
+  const newComment:CommentsType ={
+    id:v4(),
+    idUser,
+    idTask,
+    commentText
+  };
+  createComment(newComment)
+  res.json({message: 'Комментарий успешно создан', comment: newComment})
+//res.json(newComment)
 })
 
 app.listen(port, () => {

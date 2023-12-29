@@ -64,7 +64,9 @@ const createUser = (user) => {
     db_1.USERS.push(newUser);
     return newUser;
 };
-//const createComment = (comment:string)
+const createComment = (comment) => {
+    db_1.COMMENTS.push(comment);
+};
 //const information = [];
 exports.app.get("/", checkAuthenticated, (req, res) => {
     if (req.user) {
@@ -203,7 +205,19 @@ exports.app.get('/comments/:id', (req, res) => {
     res.json(taskComments);
 });
 exports.app.put('/comments', (req, res) => {
-    //const {idUser,idTas,comment}
+    const { idUser, idTask, commentText } = req.body;
+    if (!idUser || !idTask || !commentText) {
+        return res.status(400).json({ error: "Необходимо передать idUser, idTask и comment в теле запроса" });
+    }
+    const newComment = {
+        id: (0, uuid_1.v4)(),
+        idUser,
+        idTask,
+        commentText
+    };
+    createComment(newComment);
+    res.json({ message: 'Комментарий успешно создан', comment: newComment });
+    //res.json(newComment)
 });
 exports.app.listen(port, () => {
     console.log(`App listening port ${port}`);
