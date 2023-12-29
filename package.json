@@ -11,7 +11,7 @@
     "watch": "yarn tsc -w",
     "dev": " nodemon .\\dist\\index.js",
     "copy-views": "copyfiles -u 1 views/**/* dist/views",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "@types/connect-flash": "^0.0.40",

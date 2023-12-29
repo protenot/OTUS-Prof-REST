@@ -23,8 +23,8 @@ export type CommentsType = {
   idTask: string;
   commentText: string;
 };
-export type NewCommentType ={
+export type NewCommentType = {
   idUser: string;
   idTask: string;
   commentText: string;
-}
+};

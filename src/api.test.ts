@@ -1,7 +1,10 @@
 import supertest from "supertest";
+//import { request} from "supertest";
 import { app, checkAuthenticated, checkNotAuthenticated } from "../src/index";
 import passport from "passport";
 import { UsersType } from "./types";
+import{createUser} from "./index"
+import { request } from "http";
 
 describe("GET /", () => {
   it("should respond with 302 status and redirect to /login when not authenticated", async () => {
@@ -68,45 +71,89 @@ describe("GET /tasks", () => {
 });
  */
 describe("GET /users", () => {
-    it("should return a list of users", async () => {
-      const response = await supertest(app).get("/users");
-  
-      expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
-      expect(response.body).toBeInstanceOf(Array);
-    });
-  });
-  describe("GET /users/:id", () => {
-    it("should return user by id", async () => {
-      const response = await supertest(app).get("/users/1");
-  
-      expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
-      expect(response.body.id).toBe('1');
-    });
-  });
+  it("should return a list of users", async () => {
+    const response = await supertest(app).get("/users");
 
-  describe("GET /comments", () => {
-    it("should return a list of comments", async () => {
-      const response = await supertest(app).get("/comments");
-  
-      expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
-      expect(response.body).toBeInstanceOf(Array);
-      
-    });
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(response.body).toBeInstanceOf(Array);
   });
-  describe("GET /comments/:id", () => {
-    it("should return a comment by id", async () => {
-      const response = await supertest(app).get("/comments/15");
+});
+describe("GET /users/:id", () => {
+  it("should return user by id", async () => {
+    const response = await supertest(app).get("/users/1");
 
-      expect(response.status).toBe(200);
-      expect(response.body).toBeDefined();
-      expect(response.body).toStrictEqual([{
-        id: '15',
-        idUser: '1',
-        idTask: '12345',
-        commentText: 'Это комментарий к задаче 12345'
-      }]);
-    });
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(response.body.id).toBe("1");
   });
+});
+
+describe("GET /comments", () => {
+  it("should return a list of comments", async () => {
+    const response = await supertest(app).get("/comments");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(response.body).toBeInstanceOf(Array);
+  });
+});
+describe("GET /comments/:id", () => {
+  it("should return a comment by id", async () => {
+    const response = await supertest(app).get("/comments/15");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toBeDefined();
+    expect(response.body).toStrictEqual([
+      {
+        id: "15",
+        idUser: "1",
+        idTask: "12345",
+        commentText: "Это комментарий к задаче 12345",
+      },
+    ]);
+  });
+});
+
+describe('POST /users', ()=>{
+    it('should create a new user', async () => {
+        const newUser = {
+          name: 'Nestor',
+          surname: 'Petrovich',
+          email: 'nestor@example.com',
+          password: 'password123',
+        };
+        const response = await supertest(app)
+        .post('/users')
+        .send(newUser)
+        .expect(201);
+
+        const createdUser = response.body;
+//console.log(JSON.stringify(createdUser))
+        expect(createdUser.length).toBe(2);
+        expect(createdUser[1].name).toBe('Nestor');
+        expect(createdUser[1].surname).toBe('Petrovich');
+        expect(createdUser[1].role).toBe('User');  
+    })
+})
+describe('POST /comments', ()=>{
+    it('should create a new comment', async () => {
+        const newComment = {
+           
+            idUser: "10",
+            idTask: "123450",
+            commentText: "Это комментарий к задаче 123450 для тестов"
+        };
+        const response = await supertest(app)
+        .post('/comments')
+        .send(newComment)
+        .expect(200);
+
+        const createdComment = response.body.comment;
+//console.log(JSON.stringify(createdComment))
+     
+        expect(createdComment).toHaveProperty("commentText", createdComment.commentText);
+        expect(createdComment).toHaveProperty("idUser", createdComment.idUser);
+        expect(createdComment).toHaveProperty("idTask", createdComment.idTask);
+    })
+})

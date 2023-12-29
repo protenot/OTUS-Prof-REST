@@ -1,8 +1,20 @@
 import express, { NextFunction } from "express";
 import path from "path";
 import { v4 } from "uuid";
-import { UsersType, PartialUsersType, CommentsType, NewCommentType } from "./types";
-import { TASKS, USERS, COMMENTS, updateUserList, updateTasksList, updateCommentsList } from "./db";
+import {
+  UsersType,
+  PartialUsersType,
+  CommentsType,
+  NewCommentType,
+} from "./types";
+import {
+  TASKS,
+  USERS,
+  COMMENTS,
+  updateUserList,
+  updateTasksList,
+  updateCommentsList,
+} from "./db";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import flash from "express-flash";
@@ -59,7 +71,7 @@ app.use(methodOverride("_method"));
 app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-const createUser = (user: PartialUsersType): UsersType => {
+export const createUser = (user: PartialUsersType): UsersType => {
   const userId: string = v4();
   const newUser: UsersType = {
     id: userId,
@@ -69,9 +81,9 @@ const createUser = (user: PartialUsersType): UsersType => {
   return newUser;
 };
 
-const createComment = (comment:CommentsType)=>{
-  COMMENTS.push(comment)
-}
+export const createComment = (comment: CommentsType) => {
+  COMMENTS.push(comment);
+};
 
 app.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {
@@ -134,9 +146,7 @@ app.get("/users/:id", (req, res) => {
   }
   res.json(foundUser);
 });
-app.get("/tasks", (req, res) => {
-  res.json(TASKS);
-});
+
 app.post("/users", (req, res) => {
   const newUser = createUser({
     name: req.body.name,
@@ -169,6 +179,9 @@ app.put("/users/:id", (req, res) => {
   res.json(foundUser);
 });
 //CRUD для tasks
+app.get("/tasks", (req, res) => {
+  res.json(TASKS);
+});
 app.get("/tasks/:id", (req, res) => {
   const foundTask = TASKS.find((c) => c.id === req.params.id);
   if (!foundTask) {
@@ -177,9 +190,6 @@ app.get("/tasks/:id", (req, res) => {
   }
   res.json(foundTask);
 });
-
-
-
 
 app.delete("/tasks/:id", (req, res) => {
   const user = req.user as UsersType;
@@ -191,9 +201,6 @@ app.delete("/tasks/:id", (req, res) => {
     res.status(403).json({ message: "Permission denied" });
   }
 });
-
-
-
 
 app.put("/tasks/:id", (req, res) => {
   const foundTask = TASKS.find((c) => c.id === req.params.id);
@@ -211,54 +218,60 @@ app.put("/tasks/:id", (req, res) => {
 
 //CRUDE для комментариев
 app.get("/comments", (req, res) => {
-const idUser = req.query.idUser as string;
-const idTask = req.query.idTask as string
+  const idUser = req.query.idUser as string;
+  const idTask = req.query.idTask as string;
 
-let filteredComments = COMMENTS;
-if (idUser){
-  filteredComments=filteredComments.filter(comment =>comment.idUser===idUser)
-}
+  let filteredComments = COMMENTS;
+  if (idUser) {
+    filteredComments = filteredComments.filter(
+      (comment) => comment.idUser === idUser,
+    );
+  }
 
-if (idTask){
-  filteredComments=filteredComments.filter(comment =>comment.idTask===idTask)
-}
+  if (idTask) {
+    filteredComments = filteredComments.filter(
+      (comment) => comment.idTask === idTask,
+    );
+  }
 
   res.json(filteredComments);
 });
 
-app.get('/comments/:id', (req, res)=>{
-const id = req.params.id;
-const taskComments = COMMENTS.filter(comment=>comment.id===id)
-res.json(taskComments)
-})
+app.get("/comments/:id", (req, res) => {
+  const id = req.params.id;
+  const taskComments = COMMENTS.filter((comment) => comment.id === id);
+  res.json(taskComments);
+});
 
-app.post('/comments',(req,res)=>{
-  const {idUser ,idTask ,commentText} = req.body;
-  if(!idUser || idTask||commentText){
-    return res.status(400).json({error: "Необходимо передать idUser, idTask и comment в теле запроса"})
+app.post("/comments", (req, res) => {
+  const { idUser, idTask, commentText } = req.body;
+  if (!idUser || !idTask || !commentText) {
+    return res
+      .status(400)
+      .json({
+        error: "Необходимо передать idUser, idTask и comment в теле запроса",
+      });
   }
 
-  const newComment:CommentsType ={
-    id:v4(),
+  const newComment: CommentsType = {
+    id: v4(),
     idUser,
     idTask,
-    commentText
+    commentText,
   };
-  createComment(newComment)
-  res.json({message: 'Комментарий успешно создан', comment: newComment})
+  createComment(newComment);
+  res.json({ message: "Комментарий успешно создан", comment: newComment });
+});
+app.put("/comments/:id", (req, res) => {
+  const foundComment = COMMENTS.find((c) => c.id === req.params.id);
+  if (!foundComment) {
+    res.sendStatus(404);
+    return;
+  }
+  foundComment.commentText = req.body.commentText;
 
-})
-app.put('/comments/:id',(req,res)=>{
-const foundComment = COMMENTS.find((c)=>c.id === req.params.id);
-if(!foundComment){
-  res.sendStatus(404);
-  return;
-}
-foundComment.commentText = req.body.commentText
-  
-  res.json({message: 'Комментарий успешно изменен', comment: foundComment})
-
-})
+  res.json({ message: "Комментарий успешно изменен", comment: foundComment });
+});
 app.delete("/comments/:id", (req, res) => {
   const updatedComments = COMMENTS.filter((c) => c.id !== req.params.id);
   updateCommentsList(updatedComments);
@@ -280,4 +293,3 @@ export function checkNotAuthenticated(req: any, res: any, next: any) {
   }
   return next();
 }
-
