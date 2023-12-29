@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COMMENTS = exports.updateTasksList = exports.TASKS = exports.updateUserList = exports.USERS = void 0;
+exports.updateCommentsList = exports.COMMENTS = exports.updateTasksList = exports.TASKS = exports.updateUserList = exports.USERS = void 0;
 exports.USERS = [
     {
         id: "1",
@@ -58,3 +58,7 @@ exports.COMMENTS = [
         commentText: "Это комментарий к задаче 12346",
     },
 ];
+const updateCommentsList = (newComments) => {
+    exports.COMMENTS = newComments;
+};
+exports.updateCommentsList = updateCommentsList;

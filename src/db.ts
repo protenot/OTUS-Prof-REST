@@ -59,3 +59,6 @@ export let COMMENTS: CommentsType[] = [
     commentText: "Это комментарий к задаче 12346",
   },
 ];
+export const updateCommentsList = (newComments: CommentsType[]) => {
+  COMMENTS = newComments;
+};

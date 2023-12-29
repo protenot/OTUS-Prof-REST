@@ -67,7 +67,6 @@ const createUser = (user) => {
 const createComment = (comment) => {
     db_1.COMMENTS.push(comment);
 };
-//const information = [];
 exports.app.get("/", checkAuthenticated, (req, res) => {
     if (req.user) {
         const { name } = req.user;
@@ -89,28 +88,6 @@ exports.app.post("/login", passport_1.default.authenticate("local", {
 exports.app.get("/register", checkNotAuthenticated, (req, res) => {
     res.render("register.ejs");
 });
-exports.app.get("/users", (req, res) => {
-    res.json(db_1.USERS);
-});
-exports.app.get("/users/:id", (req, res) => {
-    const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
-    if (!foundUser) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundUser);
-});
-exports.app.get("/tasks", (req, res) => {
-    res.json(db_1.TASKS);
-});
-exports.app.get("/tasks/:id", (req, res) => {
-    const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
-    if (!foundTask) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundTask);
-});
 exports.app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const hashedPassword = yield bcrypt_1.default.hash(req.body.password, 10);
@@ -126,6 +103,29 @@ exports.app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.redirect("/register");
     }
 }));
+exports.app.delete("/logout", (req, res, next) => {
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/login");
+    });
+});
+//CRUD для users
+exports.app.get("/users", (req, res) => {
+    res.json(db_1.USERS);
+});
+exports.app.get("/users/:id", (req, res) => {
+    const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
+    if (!foundUser) {
+        res.sendStatus(404);
+        return;
+    }
+    res.json(foundUser);
+});
+exports.app.get("/tasks", (req, res) => {
+    res.json(db_1.TASKS);
+});
 exports.app.post("/users", (req, res) => {
     const newUser = createUser({
         name: req.body.name,
@@ -142,25 +142,6 @@ exports.app.delete("/users/:id", (req, res) => {
     (0, db_1.updateUserList)(updatedUsers);
     res.status(200).json({ message: `User '${req.params.id}' deleted` });
 });
-exports.app.delete("/tasks/:id", (req, res) => {
-    const user = req.user;
-    if (user && user.role === "Interviewer") {
-        const updatedTasks = db_1.TASKS.filter((c) => c.id !== req.params.id);
-        (0, db_1.updateTasksList)(updatedTasks);
-        res.status(200).json({ message: `Task '${req.params.id}' deleted` });
-    }
-    else {
-        res.status(403).json({ message: "Permission denied" });
-    }
-});
-exports.app.delete("/logout", (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return next(err);
-        }
-        res.redirect("/login");
-    });
-});
 exports.app.put("/users/:id", (req, res) => {
     const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
     if (!foundUser) {
@@ -172,6 +153,26 @@ exports.app.put("/users/:id", (req, res) => {
     foundUser.email = req.body.email;
     foundUser.role = req.body.role;
     res.json(foundUser);
+});
+//CRUD для tasks
+exports.app.get("/tasks/:id", (req, res) => {
+    const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
+    if (!foundTask) {
+        res.sendStatus(404);
+        return;
+    }
+    res.json(foundTask);
+});
+exports.app.delete("/tasks/:id", (req, res) => {
+    const user = req.user;
+    if (user && user.role === "Interviewer") {
+        const updatedTasks = db_1.TASKS.filter((c) => c.id !== req.params.id);
+        (0, db_1.updateTasksList)(updatedTasks);
+        res.status(200).json({ message: `Task '${req.params.id}' deleted` });
+    }
+    else {
+        res.status(403).json({ message: "Permission denied" });
+    }
 });
 exports.app.put("/tasks/:id", (req, res) => {
     const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
@@ -204,9 +205,9 @@ exports.app.get('/comments/:id', (req, res) => {
     const taskComments = db_1.COMMENTS.filter(comment => comment.id === id);
     res.json(taskComments);
 });
-exports.app.put('/comments', (req, res) => {
+exports.app.post('/comments', (req, res) => {
     const { idUser, idTask, commentText } = req.body;
-    if (!idUser || !idTask || !commentText) {
+    if (!idUser || idTask || commentText) {
         return res.status(400).json({ error: "Необходимо передать idUser, idTask и comment в теле запроса" });
     }
     const newComment = {
@@ -217,7 +218,20 @@ exports.app.put('/comments', (req, res) => {
     };
     createComment(newComment);
     res.json({ message: 'Комментарий успешно создан', comment: newComment });
-    //res.json(newComment)
+});
+exports.app.put('/comments/:id', (req, res) => {
+    const foundComment = db_1.COMMENTS.find((c) => c.id === req.params.id);
+    if (!foundComment) {
+        res.sendStatus(404);
+        return;
+    }
+    foundComment.commentText = req.body.commentText;
+    res.json({ message: 'Комментарий успешно изменен', comment: foundComment });
+});
+exports.app.delete("/comments/:id", (req, res) => {
+    const updatedComments = db_1.COMMENTS.filter((c) => c.id !== req.params.id);
+    (0, db_1.updateCommentsList)(updatedComments);
+    res.status(200).json({ message: `Comment '${req.params.id}' deleted` });
 });
 exports.app.listen(port, () => {
     console.log(`App listening port ${port}`);
