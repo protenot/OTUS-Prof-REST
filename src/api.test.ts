@@ -3,7 +3,7 @@ import supertest from "supertest";
 import { app, checkAuthenticated, checkNotAuthenticated } from "../src/index";
 import passport from "passport";
 import { UsersType } from "./types";
-import{createUser} from "./index"
+import { createUser } from "./index";
 import { request } from "http";
 
 describe("GET /", () => {
@@ -115,45 +115,132 @@ describe("GET /comments/:id", () => {
   });
 });
 
-describe('POST /users', ()=>{
-    it('should create a new user', async () => {
-        const newUser = {
-          name: 'Nestor',
-          surname: 'Petrovich',
-          email: 'nestor@example.com',
-          password: 'password123',
-        };
-        const response = await supertest(app)
-        .post('/users')
-        .send(newUser)
-        .expect(201);
+describe("POST /users", () => {
+  it("should create a new user", async () => {
+    const newUser = {
+      name: "Nestor",
+      surname: "Petrovich",
+      email: "nestor@example.com",
+      password: "password123",
+    };
+    const response = await supertest(app)
+      .post("/users")
+      .send(newUser)
+      .expect(201);
 
-        const createdUser = response.body;
-//console.log(JSON.stringify(createdUser))
-        expect(createdUser.length).toBe(2);
-        expect(createdUser[1].name).toBe('Nestor');
-        expect(createdUser[1].surname).toBe('Petrovich');
-        expect(createdUser[1].role).toBe('User');  
-    })
-})
-describe('POST /comments', ()=>{
-    it('should create a new comment', async () => {
-        const newComment = {
-           
-            idUser: "10",
-            idTask: "123450",
-            commentText: "Это комментарий к задаче 123450 для тестов"
-        };
-        const response = await supertest(app)
-        .post('/comments')
-        .send(newComment)
-        .expect(200);
+    const createdUser = response.body;
+    //console.log(JSON.stringify(createdUser))
+    expect(createdUser.length).toBe(2);
+    expect(createdUser[1].name).toBe("Nestor");
+    expect(createdUser[1].surname).toBe("Petrovich");
+    expect(createdUser[1].role).toBe("User");
+  });
+});
+describe("POST /comments", () => {
+  it("should create a new comment", async () => {
+    const newComment = {
+      idUser: "10",
+      idTask: "123450",
+      commentText: "Это комментарий к задаче 123450 для тестов",
+    };
+    const response = await supertest(app)
+      .post("/comments")
+      .send(newComment)
+      .expect(200);
 
-        const createdComment = response.body.comment;
-//console.log(JSON.stringify(createdComment))
-     
-        expect(createdComment).toHaveProperty("commentText", createdComment.commentText);
-        expect(createdComment).toHaveProperty("idUser", createdComment.idUser);
-        expect(createdComment).toHaveProperty("idTask", createdComment.idTask);
-    })
-})
+    const createdComment = response.body.comment;
+    //console.log(JSON.stringify(createdComment))
+
+    expect(createdComment).toHaveProperty(
+      "commentText",
+      createdComment.commentText,
+    );
+    expect(createdComment).toHaveProperty("idUser", createdComment.idUser);
+    expect(createdComment).toHaveProperty("idTask", createdComment.idTask);
+  });
+});
+
+describe("PUT /users/:id", () => {
+  it("should update existing user", async () => {
+    const existingUser = {
+      id: "1",
+      name: "Nestor",
+      surname: "Petrovich",
+      email: "nestor@example.com",
+      role: "User",
+    };
+    //const USERS = [existingUser];
+    const updatedUserData = {
+      name: "Updated Nestor",
+      surname: "Updated Petrovich",
+      email: "updated.nestor@example.com",
+      role: "Admin",
+    };
+
+    const response = await supertest(app)
+      .put(`/users/${existingUser.id}`)
+      .send(updatedUserData)
+      .expect(200);
+
+    const updatedUser = response.body;
+    expect(updatedUser).toHaveProperty("name", updatedUserData.name);
+    expect(updatedUser).toHaveProperty("surname", updatedUserData.surname);
+    expect(updatedUser).toHaveProperty("email", updatedUserData.email);
+    expect(updatedUser).toHaveProperty("role", updatedUserData.role);
+  });
+
+  it("should return 404 of user not found", async () => {
+    const nonExistentUserId = "999";
+    await supertest(app)
+      .put(`/users/${nonExistentUserId}`)
+      .send({
+        name: "Updated John",
+        surname: "Updated Doe",
+        email: "updated.john.doe@example.com",
+        role: "Admin",
+      })
+      .expect(404);
+  });
+});
+
+describe("PUT /comments/:id", () => {
+  it("should update existing comment", async () => {
+    const existingComment = {
+      id: "15",
+      idTask: "12345",
+      idUser: "1",
+      commentText: "Это комментарий для теста задача 12345",
+    };
+    //console.log(existingComment.id)
+
+    const updatedCommentData = {
+      idTask: "12345",
+      idUser: "1",
+      commentText: "Это измененный комментарий для теста задача 123450",
+    };
+    console.log(JSON.stringify(updatedCommentData));
+    const response = await supertest(app)
+      .put(`/comments/${existingComment.id}`)
+      .send(updatedCommentData)
+      .expect(200);
+
+    const updatedComment = response.body.comment;
+    console.log(JSON.stringify(updatedComment));
+    expect(updatedComment).toHaveProperty(
+      "commentText",
+      updatedComment.commentText,
+    );
+  });
+
+  it("should return 404 of comment not found", async () => {
+    const nonExistentCommentId = "999";
+    await supertest(app)
+      .put(`/users/${nonExistentCommentId}`)
+      .send({
+        idTask: "12345",
+        idUser: "1",
+        commentText: "Это измененный комментарий для теста задача 123450",
+      })
+      .expect(404);
+  });
+});

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1703865543202" clover="3.2.0">
-  <project timestamp="1703865543202" name="All files">
-    <metrics statements="174" coveredstatements="82" conditionals="37" coveredconditionals="8" methods="48" coveredmethods="12" elements="259" coveredelements="102" complexity="0" loc="174" ncloc="174" packages="1" files="4" classes="4"/>
+<coverage generated="1704117534586" clover="3.2.0">
+  <project timestamp="1704117534586" name="All files">
+    <metrics statements="173" coveredstatements="94" conditionals="37" coveredconditionals="11" methods="48" coveredmethods="16" elements="258" coveredelements="121" complexity="0" loc="173" ncloc="173" packages="1" files="4" classes="4"/>
     <file name="db.ts" path="C:\Users\Оля\Desktop\JS-professional-OTUS\OTUS-Prof-REST\src\db.ts">
       <metrics statements="9" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
       <line num="4" count="2" type="stmt"/>
@@ -15,7 +15,7 @@
       <line num="63" count="0" type="stmt"/>
     </file>
     <file name="index.ts" path="C:\Users\Оля\Desktop\JS-professional-OTUS\OTUS-Prof-REST\src\index.ts">
-      <metrics statements="140" coveredstatements="65" conditionals="33" coveredconditionals="8" methods="39" coveredmethods="9"/>
+      <metrics statements="139" coveredstatements="77" conditionals="33" coveredconditionals="11" methods="39" coveredmethods="13"/>
       <line num="30" count="2" type="cond" truecount="1" falsecount="1"/>
       <line num="31" count="2" type="stmt"/>
       <line num="34" count="2" type="stmt"/>
@@ -75,22 +75,21 @@
       <line num="147" count="0" type="stmt"/>
       <line num="150" count="2" type="stmt"/>
       <line num="151" count="1" type="stmt"/>
-      <line num="158" count="1" type="stmt"/>
       <line num="160" count="1" type="stmt"/>
       <line num="163" count="2" type="stmt"/>
       <line num="164" count="0" type="stmt"/>
       <line num="165" count="0" type="stmt"/>
       <line num="166" count="0" type="stmt"/>
       <line num="169" count="2" type="stmt"/>
-      <line num="170" count="0" type="stmt"/>
-      <line num="171" count="0" type="cond" truecount="0" falsecount="2"/>
-      <line num="172" count="0" type="stmt"/>
-      <line num="173" count="0" type="stmt"/>
-      <line num="175" count="0" type="stmt"/>
-      <line num="176" count="0" type="stmt"/>
-      <line num="177" count="0" type="stmt"/>
-      <line num="178" count="0" type="stmt"/>
-      <line num="179" count="0" type="stmt"/>
+      <line num="170" count="5" type="stmt"/>
+      <line num="171" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="172" count="2" type="stmt"/>
+      <line num="173" count="2" type="stmt"/>
+      <line num="175" count="1" type="stmt"/>
+      <line num="176" count="1" type="stmt"/>
+      <line num="177" count="1" type="stmt"/>
+      <line num="178" count="1" type="stmt"/>
+      <line num="179" count="1" type="stmt"/>
       <line num="182" count="2" type="stmt"/>
       <line num="183" count="2" type="stmt"/>
       <line num="185" count="2" type="stmt"/>
@@ -140,12 +139,12 @@
       <line num="262" count="1" type="stmt"/>
       <line num="263" count="1" type="stmt"/>
       <line num="265" count="2" type="stmt"/>
-      <line num="266" count="0" type="stmt"/>
-      <line num="267" count="0" type="cond" truecount="0" falsecount="2"/>
+      <line num="266" count="1" type="stmt"/>
+      <line num="267" count="1" type="cond" truecount="1" falsecount="1"/>
       <line num="268" count="0" type="stmt"/>
       <line num="269" count="0" type="stmt"/>
-      <line num="271" count="0" type="stmt"/>
-      <line num="273" count="0" type="stmt"/>
+      <line num="271" count="1" type="stmt"/>
+      <line num="273" count="1" type="stmt"/>
       <line num="275" count="2" type="stmt"/>
       <line num="276" count="0" type="stmt"/>
       <line num="277" count="0" type="stmt"/>

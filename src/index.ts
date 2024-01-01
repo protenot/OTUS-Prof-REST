@@ -155,7 +155,7 @@ app.post("/users", (req, res) => {
     role: "User",
     password: req.body.password,
   });
-  console.log(newUser);
+  //console.log(newUser);
 
   res.status(201).json(USERS);
 });
@@ -246,11 +246,9 @@ app.get("/comments/:id", (req, res) => {
 app.post("/comments", (req, res) => {
   const { idUser, idTask, commentText } = req.body;
   if (!idUser || !idTask || !commentText) {
-    return res
-      .status(400)
-      .json({
-        error: "Необходимо передать idUser, idTask и comment в теле запроса",
-      });
+    return res.status(400).json({
+      error: "Необходимо передать idUser, idTask и comment в теле запроса",
+    });
   }
 
   const newComment: CommentsType = {
