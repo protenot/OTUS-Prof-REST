@@ -9,6 +9,7 @@ exports.USERS = [
         email: "protenot@gmail.com",
         role: "User",
     },
+   
 ];
 const updateUserList = (newUsers) => {
     exports.USERS = newUsers;

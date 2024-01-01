@@ -20,27 +20,27 @@
         <h1><a href="index.html">All files</a> index.ts</h1>
         <div class="clearfix">
           <div class="fl pad1y space-right2">
-            <span class="strong">53.33% </span>
+            <span class="strong">58.27% </span>
             <span class="quiet">Statements</span>
-            <span class="fraction">80/150</span>
+            <span class="fraction">88/151</span>
           </div>
 
           <div class="fl pad1y space-right2">
-            <span class="strong">33.33% </span>
+            <span class="strong">39.39% </span>
             <span class="quiet">Branches</span>
-            <span class="fraction">11/33</span>
+            <span class="fraction">13/33</span>
           </div>
 
           <div class="fl pad1y space-right2">
-            <span class="strong">33.33% </span>
+            <span class="strong">41.02% </span>
             <span class="quiet">Functions</span>
-            <span class="fraction">13/39</span>
+            <span class="fraction">16/39</span>
           </div>
 
           <div class="fl pad1y space-right2">
-            <span class="strong">55.39% </span>
+            <span class="strong">60% </span>
             <span class="quiet">Lines</span>
-            <span class="fraction">77/139</span>
+            <span class="fraction">84/140</span>
           </div>
         </div>
         <p class="quiet">
@@ -350,8 +350,7 @@
 <a name='L292'></a><a href='#L292'>292</a>
 <a name='L293'></a><a href='#L293'>293</a>
 <a name='L294'></a><a href='#L294'>294</a>
-<a name='L295'></a><a href='#L295'>295</a>
-<a name='L296'></a><a href='#L296'>296</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L295'></a><a href='#L295'>295</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -520,7 +519,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -545,13 +544,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -604,8 +604,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -626,9 +624,9 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -839,14 +837,15 @@ app.get("/tasks/:id", <span class="fstat-no" title="function not covered" >(r</s
 <span class="cstat-no" title="statement not covered" >  res.json(foundTask);</span>
 });
 &nbsp;
-app.delete("/tasks/:id", <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {
-  const user = <span class="cstat-no" title="statement not covered" >req.user as UsersType;</span>
-<span class="cstat-no" title="statement not covered" >  if (user &amp;&amp; user.role === "Interviewer") {</span>
+app.delete("/tasks/:id", (req, res) =&gt; {
+  const user = req.user as UsersType;
+  console.log(user)
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (user &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >user.role === "Interviewer")</span> {
     const updatedTasks = <span class="cstat-no" title="statement not covered" >TASKS.filter(<span class="fstat-no" title="function not covered" >(c</span>) =&gt; <span class="cstat-no" title="statement not covered" >c.id !== req.params.id)</span>;</span>
 <span class="cstat-no" title="statement not covered" >    updateTasksList(updatedTasks);</span>
 <span class="cstat-no" title="statement not covered" >    res.status(200).json({ message: `Task '${req.params.id}' deleted` });</span>
   } else {
-<span class="cstat-no" title="statement not covered" >    res.status(403).json({ message: "Permission denied" });</span>
+    res.status(403).json({ message: "Permission denied" });
   }
 });
 &nbsp;
@@ -894,11 +893,9 @@ app.get("/comments/:id", (req, res) =&gt; {
 app.post("/comments", (req, res) =&gt; {
   const { idUser, idTask, commentText } = req.body;
   <span class="missing-if-branch" title="if path not taken" >I</span>if (!idUser || !idTask || !commentText) {
-<span class="cstat-no" title="statement not covered" >    return res</span>
-      .status(400)
-      .json({
-        error: "Необходимо передать idUser, idTask и comment в теле запроса",
-      });
+<span class="cstat-no" title="statement not covered" >    return res.status(400).json({</span>
+      error: "Необходимо передать idUser, idTask и comment в теле запроса",
+    });
   }
 &nbsp;
   const newComment: CommentsType = {
@@ -920,10 +917,10 @@ app.put("/comments/:id", (req, res) =&gt; {
 &nbsp;
   res.json({ message: "Комментарий успешно изменен", comment: foundComment });
 });
-app.delete("/comments/:id", <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {
-  const updatedComments = <span class="cstat-no" title="statement not covered" >COMMENTS.filter(<span class="fstat-no" title="function not covered" >(c</span>) =&gt; <span class="cstat-no" title="statement not covered" >c.id !== req.params.id)</span>;</span>
-<span class="cstat-no" title="statement not covered" >  updateCommentsList(updatedComments);</span>
-<span class="cstat-no" title="statement not covered" >  res.status(200).json({ message: `Comment '${req.params.id}' deleted` });</span>
+app.delete("/comments/:id", (req, res) =&gt; {
+  const updatedComments = COMMENTS.filter((c) =&gt; c.id !== req.params.id);
+  updateCommentsList(updatedComments);
+  res.status(200).json({ message: `Comment '${req.params.id}' deleted` });
 });
 &nbsp;
 /* app.listen(port, () =&gt; {
@@ -955,7 +952,7 @@ export function <span class="fstat-no" title="function not covered" >checkNotAut
         rel="noopener noreferrer"
         >istanbul</a
       >
-      at 2024-01-01T13:58:54.560Z
+      at 2024-01-01T15:07:42.318Z
     </div>
     <script src="prettify.js"></script>
     <script>

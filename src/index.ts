@@ -193,6 +193,7 @@ app.get("/tasks/:id", (req, res) => {
 
 app.delete("/tasks/:id", (req, res) => {
   const user = req.user as UsersType;
+  console.log(user);
   if (user && user.role === "Interviewer") {
     const updatedTasks = TASKS.filter((c) => c.id !== req.params.id);
     updateTasksList(updatedTasks);

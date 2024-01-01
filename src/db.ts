@@ -9,6 +9,13 @@ export let USERS: UsersType[] = [
     email: "protenot@gmail.com",
     role: "User",
   },
+  {
+    id: "2",
+    name: "Nestor",
+    surname: "Petrovich",
+    email: "nestor@gmail.com",
+    role: "Interviewer",
+  },
 ];
 
 export const updateUserList = (newUsers: UsersType[]) => {

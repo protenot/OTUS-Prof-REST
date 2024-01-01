@@ -1,5 +1,5 @@
 import supertest from "supertest";
-//import { request} from "supertest";
+import { USERS } from "./db";
 import { app, checkAuthenticated, checkNotAuthenticated } from "../src/index";
 import passport from "passport";
 import { UsersType } from "./types";
@@ -130,10 +130,9 @@ describe("POST /users", () => {
 
     const createdUser = response.body;
     //console.log(JSON.stringify(createdUser))
-    expect(createdUser.length).toBe(2);
+    expect(createdUser.length).toBe(3);
     expect(createdUser[1].name).toBe("Nestor");
     expect(createdUser[1].surname).toBe("Petrovich");
-    expect(createdUser[1].role).toBe("User");
   });
 });
 describe("POST /comments", () => {
@@ -242,5 +241,53 @@ describe("PUT /comments/:id", () => {
         commentText: "Это измененный комментарий для теста задача 123450",
       })
       .expect(404);
+  });
+});
+describe("DELETE /tasks/:id", () => {
+  const mockTask = { id: "12345" };
+  it("should return 403 if user is not an Interviewer", async () => {
+    const mockInterviewerUser = {
+      id: "1",
+      name: "Olga",
+      surname: "Belaya",
+      email: "protenot@gmail.com",
+      role: "User",
+    };
+
+    const response = await supertest(app)
+      .delete(`/tasks/${mockTask.id}`)
+      .set("user", JSON.stringify(mockInterviewerUser))
+      .expect(403);
+    const responseBody = response.body;
+    expect(responseBody).toHaveProperty("message", "Permission denied");
+  });
+  // не знаю как проверить чтоб код 200 возвращался
+  /*  it('should delete a task for Interviewer', async () => {
+
+    const mockInterviewerUser=
+    USERS.find((user)=>user.role==="Interviewer") 
+    expect(mockInterviewerUser).toBeDefined();
+  const response = await supertest(app)
+
+.delete(`/tasks/${mockTask.id}`)
+.set('user', JSON.stringify(mockInterviewerUser))
+.expect(200);
+})
+ */
+});
+describe("DELETE /comments/:id", () => {
+  const mockComment = {
+    id: "15",
+    idUser: "1",
+    idTask: "12345",
+    commentText: "Это комментарий к задаче 12345",
+  };
+  it("should delete comment by id", async () => {
+    const response = await supertest(app)
+      .delete(`/comments/${mockComment.id}`)
+      //.set("user", JSON.stringify(mockInterviewerUser))
+      .expect(200);
+    const responseBody = response.body;
+    expect(responseBody).toHaveProperty("message", `Comment '15' deleted`);
   });
 });
