@@ -193,7 +193,7 @@ app.get("/tasks/:id", (req, res) => {
 
 app.delete("/tasks/:id", (req, res) => {
   const user = req.user as UsersType;
-  console.log(user);
+  //console.log(user)
   if (user && user.role === "Interviewer") {
     const updatedTasks = TASKS.filter((c) => c.id !== req.params.id);
     updateTasksList(updatedTasks);
@@ -277,9 +277,9 @@ app.delete("/comments/:id", (req, res) => {
   res.status(200).json({ message: `Comment '${req.params.id}' deleted` });
 });
 
-/* app.listen(port, () => {
+app.listen(port, () => {
   console.log(`App listening port ${port}`);
-}); */
+});
 export function checkAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return next();

@@ -148,7 +148,7 @@ describe("POST /comments", () => {
       .expect(200);
 
     const createdComment = response.body.comment;
-    //console.log(JSON.stringify(createdComment))
+  
 
     expect(createdComment).toHaveProperty(
       "commentText",
@@ -168,7 +168,7 @@ describe("PUT /users/:id", () => {
       email: "nestor@example.com",
       role: "User",
     };
-    //const USERS = [existingUser];
+   
     const updatedUserData = {
       name: "Updated Nestor",
       surname: "Updated Petrovich",
@@ -210,7 +210,7 @@ describe("PUT /comments/:id", () => {
       idUser: "1",
       commentText: "Это комментарий для теста задача 12345",
     };
-    //console.log(existingComment.id)
+
 
     const updatedCommentData = {
       idTask: "12345",
