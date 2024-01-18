@@ -2,7 +2,7 @@ import supertest from "supertest";
 import { USERS } from "./db";
 import { app, checkAuthenticated, checkNotAuthenticated } from "../src/index";
 import passport from "passport";
-import { UsersType } from "./types";
+import { User } from "./models/user.model";
 import { createUser } from "./index";
 import { request } from "http";
 
@@ -12,7 +12,7 @@ describe("GET /", () => {
   });
 
   it("should respond with 200 status and render index.ejs when authenticated", async () => {
-    const authenticatedUser: UsersType = {
+    const authenticatedUser: User = {
       id: "dbcb0f08-51f9-4b1c-830b-a9a16005e0ab",
       name: "Prot",
       email: "prot@prot",
@@ -27,7 +27,7 @@ describe("GET /", () => {
 
     app.get("/", authenticateUser, checkAuthenticated, (req, res) => {
       if (req.user) {
-        const { name } = req.user as UsersType;
+        const { name } = req.user as User;
         res.render("index.ejs", { name });
       } else {
         res.redirect("/login");

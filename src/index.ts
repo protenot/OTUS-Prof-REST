@@ -1,12 +1,9 @@
 import express, { NextFunction } from "express";
 import path from "path";
 import { v4 } from "uuid";
-import {
-  UsersType,
-  PartialUsersType,
-  CommentsType,
-  NewCommentType,
-} from "./types";
+
+import { User, PartialUsersType } from "./models/user.model";
+import { Comment } from "./models/comment.model";
 import {
   TASKS,
   USERS,
@@ -48,8 +45,8 @@ const swaggerSpec = swaggerJsdoc(options);
 
 initializePassport(
   passport,
-  (email: string) => USERS.find((user: UsersType) => user.email === email),
-  (id: string) => USERS.find((user: UsersType) => user.id === id),
+  (email: string) => USERS.find((user: User) => user.email === email),
+  (id: string) => USERS.find((user: User) => user.id === id),
 );
 app.use(express.json());
 
@@ -71,9 +68,9 @@ app.use(methodOverride("_method"));
 app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-export const createUser = (user: PartialUsersType): UsersType => {
+export const createUser = (user: PartialUsersType): User => {
   const userId: string = v4();
-  const newUser: UsersType = {
+  const newUser:User = {
     id: userId,
     ...user,
   };
@@ -81,13 +78,13 @@ export const createUser = (user: PartialUsersType): UsersType => {
   return newUser;
 };
 
-export const createComment = (comment: CommentsType) => {
+export const createComment = (comment: Comment) => {
   COMMENTS.push(comment);
 };
 
 app.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {
-    const { name } = req.user as UsersType;
+    const { name } = req.user as User;
     res.render("index.ejs", { name });
   } else {
     res.redirect("/login");
@@ -192,7 +189,7 @@ app.get("/tasks/:id", (req, res) => {
 });
 
 app.delete("/tasks/:id", (req, res) => {
-  const user = req.user as UsersType;
+  const user = req.user as User;
   //console.log(user)
   if (user && user.role === "Interviewer") {
     const updatedTasks = TASKS.filter((c) => c.id !== req.params.id);
@@ -252,7 +249,7 @@ app.post("/comments", (req, res) => {
     });
   }
 
-  const newComment: CommentsType = {
+  const newComment: Comment = {
     id: v4(),
     idUser,
     idTask,
