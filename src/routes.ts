@@ -24,6 +24,8 @@ const router = express.Router();
 router.get("/users", (req, res) => {
   // res.json([{ id: 1, name: 'User 1' }, { id: 2, name: 'User 2' }]);
   res.json(USERS);
+//  res.render('login.ejs')
+
 });
 
 /**

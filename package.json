@@ -4,12 +4,13 @@
   "main": "index.js",
   "repository": "https://github.com/protenot/OTUS-Prof-REST.git",
   "author": "Olga_Belaya <protenot@yandex.ru>",
+  "license": "MIT", 
   "scripts": {
     "lint": "prettier --check .",
     "lint:fix": "prettier --write . ",
     "watch": "yarn tsc -w",
     "dev": " nodemon .\\dist\\index.js",
-    "copy-views": "copyfiles -u 1 views/**/* dist/views",
+    "copy-views": "copyfiles -u 1 views/**/* dist/views  && copyfiles -u 1 src/**/*.html dist/src",
     "test": "jest --coverage"
   },
   "dependencies": {

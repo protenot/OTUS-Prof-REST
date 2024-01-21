@@ -61,12 +61,17 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+//app.set("view engine", "ejs");
+//app.set("view engine", "vjs");
+//app.set("views", path.join(__dirname, "views"));
+//app.set("client", path.join(__dirname, "client"));
+
+
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
-app.use("/", routes);
+//app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(express.static(path.resolve(__dirname,'client')))
 
 export const createUser = (user: PartialUsersType): User => {
   const userId: string = v4();
@@ -75,6 +80,7 @@ export const createUser = (user: PartialUsersType): User => {
     ...user,
   };
   USERS.push(newUser);
+  console.log(newUser)
   return newUser;
 };
 
@@ -105,7 +111,8 @@ app.post(
 );
 
 app.get("/register", checkNotAuthenticated, (req, res) => {
-  res.render("register.ejs");
+  res.sendFile(path.resolve(__dirname,'src/client','register.html'))
+  //res.render("register.ejs");
 });
 app.post("/register", async (req, res) => {
   try {
@@ -133,7 +140,9 @@ app.delete("/logout", (req, res, next: NextFunction) => {
 
 //CRUD для users
 app.get("/users", (req, res) => {
-  res.json(USERS);
+  res.sendFile(path.resolve(__dirname,'src/client','index.html'))
+  //res.render('index.html')
+ // res.json(USERS);
 });
 app.get("/users/:id", (req, res) => {
   const foundUser = USERS.find((c) => c.id === req.params.id);
@@ -274,9 +283,9 @@ app.delete("/comments/:id", (req, res) => {
   res.status(200).json({ message: `Comment '${req.params.id}' deleted` });
 });
 
-/* app.listen(port, () => {
+app.listen(port, () => {
   console.log(`App listening port ${port}`);
-}); */
+});
 export function checkAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return next();
