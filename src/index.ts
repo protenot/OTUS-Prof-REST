@@ -70,7 +70,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export const createUser = (user: PartialUsersType): User => {
   const userId: string = v4();
-  const newUser:User = {
+  const newUser: User = {
     id: userId,
     ...user,
   };
