@@ -4,4 +4,6 @@ module.exports = {
   transform: {
     "^.+\\.tsx?$": "babel-jest",
   },
+
+  "preset": "jest-playwright-preset"
 };

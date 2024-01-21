@@ -274,9 +274,9 @@ app.delete("/comments/:id", (req, res) => {
   res.status(200).json({ message: `Comment '${req.params.id}' deleted` });
 });
 
-app.listen(port, () => {
+/* app.listen(port, () => {
   console.log(`App listening port ${port}`);
-});
+}); */
 export function checkAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return next();

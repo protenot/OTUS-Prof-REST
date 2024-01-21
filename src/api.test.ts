@@ -5,6 +5,9 @@ import passport from "passport";
 import { User } from "./models/user.model";
 import { createUser } from "./index";
 import { request } from "http";
+import { expect} from '@playwright/test';
+
+
 
 describe("GET /", () => {
   it("should respond with 302 status and redirect to /login when not authenticated", async () => {
