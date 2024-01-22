@@ -73,6 +73,7 @@ app.use(methodOverride("_method"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.static(path.resolve(__dirname,'dist')))
 app.use(express.static(path.resolve(__dirname,'dist')))
+app.use(express.static('dist'));
 app.use((req, res, next) => {
   console.log(`Received request for: ${req.url}`);
   next();
