@@ -64,14 +64,20 @@ app.use(passport.session());
 //app.set("view engine", "ejs");
 //app.set("view engine", "vjs");
 //app.set("views", path.join(__dirname, "views"));
-//app.set("client", path.join(__dirname, "client"));
+//app.set("dist", path.join(__dirname, "dist"));
 
 
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 //app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-app.use(express.static(path.resolve(__dirname,'client')))
+app.use(express.static(path.resolve(__dirname,'dist')))
+app.use(express.static(path.resolve(__dirname,'dist')))
+app.use((req, res, next) => {
+  console.log(`Received request for: ${req.url}`);
+  next();
+});
+
 
 export const createUser = (user: PartialUsersType): User => {
   const userId: string = v4();
@@ -99,7 +105,8 @@ app.get("/", checkAuthenticated, (req, res) => {
 
 app.get("/login", checkNotAuthenticated, (req, res) => {
   console.log("Flash messages:", req.flash("error"));
-  res.render("login", { messages: req.flash("error") });
+  //res.render("login", { messages: req.flash("error") });
+  res.sendFile(path.resolve(__dirname,'src/client','index.html'))
 });
 app.post(
   "/login",
@@ -111,7 +118,15 @@ app.post(
 );
 
 app.get("/register", checkNotAuthenticated, (req, res) => {
-  res.sendFile(path.resolve(__dirname,'src/client','register.html'))
+  res.sendFile(path.resolve(__dirname, 'src/client', 'register.html'), {}, (err) => {
+    if (err) {
+      console.error(err);
+     
+    }
+  });
+  
+  //res.sendFile(path.resolve(__dirname,'dist/src/client','index.html'))
+  //res.sendFile(path.join(__dirname,'dist/src/client/index.html'))
   //res.render("register.ejs");
 });
 app.post("/register", async (req, res) => {
@@ -140,9 +155,11 @@ app.delete("/logout", (req, res, next: NextFunction) => {
 
 //CRUD для users
 app.get("/users", (req, res) => {
-  res.sendFile(path.resolve(__dirname,'src/client','index.html'))
+  console.log("Flash messages:", req.flash("error"));
+  //res.sendFile(path.resolve(__dirname,'dist/src/client','register.html'))
   //res.render('index.html')
  // res.json(USERS);
+ res.send('HELLOOO')
 });
 app.get("/users/:id", (req, res) => {
   const foundUser = USERS.find((c) => c.id === req.params.id);

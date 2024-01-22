@@ -54,12 +54,17 @@ exports.app.use(passport_1.default.session());
 //app.set("view engine", "ejs");
 //app.set("view engine", "vjs");
 //app.set("views", path.join(__dirname, "views"));
-//app.set("client", path.join(__dirname, "client"));
+//app.set("dist", path.join(__dirname, "dist"));
 exports.app.use(express_1.default.urlencoded({ extended: false }));
 exports.app.use((0, method_override_1.default)("_method"));
 //app.use("/", routes);
 exports.app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
-exports.app.use(express_1.default.static(path_1.default.resolve(__dirname, 'client')));
+exports.app.use(express_1.default.static(path_1.default.resolve(__dirname, 'dist')));
+exports.app.use(express_1.default.static(path_1.default.resolve(__dirname, 'dist')));
+exports.app.use((req, res, next) => {
+    console.log(`Received request for: ${req.url}`);
+    next();
+});
 const createUser = (user) => {
     const userId = (0, uuid_1.v4)();
     const newUser = Object.assign({ id: userId }, user);
@@ -83,7 +88,8 @@ exports.app.get("/", checkAuthenticated, (req, res) => {
 });
 exports.app.get("/login", checkNotAuthenticated, (req, res) => {
     console.log("Flash messages:", req.flash("error"));
-    res.render("login", { messages: req.flash("error") });
+    //res.render("login", { messages: req.flash("error") });
+    res.sendFile(path_1.default.resolve(__dirname, 'src/client', 'index.html'));
 });
 exports.app.post("/login", passport_1.default.authenticate("local", {
     successRedirect: "/",
@@ -91,7 +97,13 @@ exports.app.post("/login", passport_1.default.authenticate("local", {
     failureFlash: true,
 }));
 exports.app.get("/register", checkNotAuthenticated, (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, 'src/client', 'register.html'));
+    res.sendFile(path_1.default.resolve(__dirname, 'src/client', 'register.html'), {}, (err) => {
+        if (err) {
+            console.error(err);
+        }
+    });
+    //res.sendFile(path.resolve(__dirname,'dist/src/client','index.html'))
+    //res.sendFile(path.join(__dirname,'dist/src/client/index.html'))
     //res.render("register.ejs");
 });
 exports.app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -119,9 +131,11 @@ exports.app.delete("/logout", (req, res, next) => {
 });
 //CRUD для users
 exports.app.get("/users", (req, res) => {
-    res.sendFile(path_1.default.resolve(__dirname, 'src/client', 'index.html'));
+    console.log("Flash messages:", req.flash("error"));
+    //res.sendFile(path.resolve(__dirname,'dist/src/client','register.html'))
     //res.render('index.html')
     // res.json(USERS);
+    res.send('HELLOOO');
 });
 exports.app.get("/users/:id", (req, res) => {
     const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
