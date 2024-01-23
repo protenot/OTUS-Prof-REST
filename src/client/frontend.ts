@@ -1,7 +1,7 @@
-import {createApp} from 'vue';
+import { createApp } from 'vue';
 
-console.log(createApp)
- const vueApp = 
+//console.log(createApp)
+  const vueApp = 
  createApp({
   
    data(){

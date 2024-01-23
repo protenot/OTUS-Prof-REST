@@ -51,6 +51,20 @@
       "vue-router": "https://cdnjs.cloudflare.com/ajax/libs/vue-router/4.1.5/vue-router.esm-browser.min.js"
   } }
 </script> -->
- <script type = "module" src = "/src/client/frontend.js"></script>   
+
+<!--  <script type = "module" src = "/src/client/frontend.js"></script> 
+ -->
+ <script>
+  // Загрузка Vue.js с UNPKG перед загрузкой основного скрипта
+  async function loadVue() {
+    await import('https://unpkg.com/vue@3.4.15/dist/vue.global.js');
+    // Загрузка основного скрипта после загрузки Vue.js
+    await import('./frontend.js');
+  }
+
+  loadVue();
+</script>
+</body>
+ 
 </body>
 </html>
