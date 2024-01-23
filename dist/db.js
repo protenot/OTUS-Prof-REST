@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateCommentsList = exports.COMMENTS = exports.updateTasksList = exports.TASKS = exports.updateUserList = exports.USERS = void 0;
+exports.updateCommentsList = exports.COMMENTS = exports.updateTasksList = exports.TASKS = exports.updateUser = exports.updateUserList = exports.USERS = void 0;
 exports.USERS = [
     {
         id: "1",
@@ -21,6 +21,9 @@ const updateUserList = (newUsers) => {
     exports.USERS = newUsers;
 };
 exports.updateUserList = updateUserList;
+const updateUser = (foundUser) => {
+};
+exports.updateUser = updateUser;
 exports.TASKS = [
     {
         id: "12345",

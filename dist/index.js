@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkNotAuthenticated = exports.checkAuthenticated = exports.createComment = exports.createUser = exports.app = void 0;
+exports.checkNotAuthenticated = exports.checkAuthenticated = exports.createComment = exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
@@ -25,7 +25,7 @@ const passport_config_1 = __importDefault(require("./config/passport-config"));
 const method_override_1 = __importDefault(require("method-override"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
-const routes_1 = __importDefault(require("./routes"));
+const routes_1 = __importDefault(require("./routes/routes"));
 if (process.env.NODE_ENV !== "production") {
     require("dotenv").config();
 }
@@ -39,7 +39,7 @@ const options = {
             version: "1.0.0",
         },
     },
-    apis: ["./src/routes.ts"],
+    apis: ["./src/routes/routes.ts"],
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(options);
 (0, passport_config_1.default)(passport_1.default, (email) => db_1.USERS.find((user) => user.email === email), (id) => db_1.USERS.find((user) => user.id === id));
@@ -58,13 +58,15 @@ exports.app.use(express_1.default.urlencoded({ extended: false }));
 exports.app.use((0, method_override_1.default)("_method"));
 exports.app.use("/", routes_1.default);
 exports.app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
-const createUser = (user) => {
-    const userId = (0, uuid_1.v4)();
-    const newUser = Object.assign({ id: userId }, user);
-    db_1.USERS.push(newUser);
-    return newUser;
-};
-exports.createUser = createUser;
+/* export const createUser = (user: PartialUsersType): User => {
+  const userId: string = v4();
+  const newUser:User = {
+    id: userId,
+    ...user,
+  };
+  USERS.push(newUser);
+  return newUser;
+}; */
 const createComment = (comment) => {
     db_1.COMMENTS.push(comment);
 };
@@ -114,45 +116,46 @@ exports.app.delete("/logout", (req, res, next) => {
     });
 });
 //CRUD для users
-exports.app.get("/users", (req, res) => {
-    res.json(db_1.USERS);
-});
-exports.app.get("/users/:id", (req, res) => {
-    const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
-    if (!foundUser) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundUser);
-});
-exports.app.post("/users", (req, res) => {
-    const newUser = (0, exports.createUser)({
-        name: req.body.name,
-        surname: req.body.surname,
-        email: req.body.email,
-        role: "User",
-        password: req.body.password,
-    });
-    //console.log(newUser);
-    res.status(201).json(db_1.USERS);
-});
-exports.app.delete("/users/:id", (req, res) => {
-    const updatedUsers = db_1.USERS.filter((c) => c.id !== req.params.id);
-    (0, db_1.updateUserList)(updatedUsers);
-    res.status(200).json({ message: `User '${req.params.id}' deleted` });
-});
-exports.app.put("/users/:id", (req, res) => {
-    const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
-    if (!foundUser) {
-        res.sendStatus(404);
-        return;
-    }
-    foundUser.name = req.body.name;
-    foundUser.surname = req.body.surname;
-    foundUser.email = req.body.email;
-    foundUser.role = req.body.role;
-    res.json(foundUser);
-});
+/* app.get("/users", (req, res) => {
+  res.json(USERS);
+}); */
+/* app.get("/users/:id", (req, res) => {
+  const foundUser = USERS.find((c) => c.id === req.params.id);
+  if (!foundUser) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundUser);
+}); */
+/* app.post("/users", (req, res) => {
+  const newUser = createUser({
+    name: req.body.name,
+    surname: req.body.surname,
+    email: req.body.email,
+    role: "User",
+    password: req.body.password,
+  });
+
+
+  res.status(201).json(USERS);
+}); */
+/* app.delete("/users/:id", (req, res) => {
+  const updatedUsers = USERS.filter((c) => c.id !== req.params.id);
+  updateUserList(updatedUsers);
+  res.status(200).json({ message: `User '${req.params.id}' deleted` });
+}); */
+/* app.put("/users/:id", (req, res) => {
+  const foundUser = USERS.find((c) => c.id === req.params.id);
+  if (!foundUser) {
+    res.sendStatus(404);
+    return;
+  }
+  foundUser.name = req.body.name;
+  foundUser.surname = req.body.surname;
+  foundUser.email = req.body.email;
+  foundUser.role = req.body.role;
+  res.json(foundUser);
+}); */
 //CRUD для tasks
 exports.app.get("/tasks", (req, res) => {
     res.json(db_1.TASKS);

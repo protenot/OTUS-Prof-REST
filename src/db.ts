@@ -23,6 +23,9 @@ export let USERS: User[] = [
 export const updateUserList = (newUsers: User[]) => {
   USERS = newUsers;
 };
+export const updateUser = (foundUser:User)=>{
+  
+}
 
 export let TASKS: Task[] = [
   {
