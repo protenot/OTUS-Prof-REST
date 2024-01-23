@@ -16,7 +16,7 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import flash from "express-flash";
 import session from "express-session";
-import initializePassport from "./passport-config";
+import initializePassport from "./config/passport-config";
 import methodOverride from "method-override";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
