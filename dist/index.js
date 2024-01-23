@@ -53,7 +53,7 @@ exports.app.use((0, express_session_1.default)({
 exports.app.use(passport_1.default.initialize());
 exports.app.use(passport_1.default.session());
 exports.app.set("view engine", "ejs");
-exports.app.set("views", path_1.default.join(__dirname, "views"));
+exports.app.set("views", path_1.default.join(__dirname, "src/views"));
 exports.app.use(express_1.default.urlencoded({ extended: false }));
 exports.app.use((0, method_override_1.default)("_method"));
 exports.app.use("/", routes_1.default);
