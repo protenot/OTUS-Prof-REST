@@ -21,7 +21,11 @@ const updateUserList = (newUsers) => {
     exports.USERS = newUsers;
 };
 exports.updateUserList = updateUserList;
-const updateUser = (foundUser) => {
+const updateUser = (updateUser) => {
+    const userIndex = exports.USERS.findIndex((user) => user.id === updateUser.id);
+    if (userIndex !== -1) {
+        exports.USERS[userIndex] = updateUser;
+    }
 };
 exports.updateUser = updateUser;
 exports.TASKS = [

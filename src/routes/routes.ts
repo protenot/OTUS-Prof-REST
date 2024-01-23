@@ -2,7 +2,12 @@ import { USERS, updateUserList } from "../db";
 
 import express from "express";
 import passport from "passport";
-import { createUser, createUserController, deleteUser } from "../controllers/users.controllers";
+import {
+  createUser,
+  createUserController,
+  deleteUser,
+  updateUserController,
+} from "../controllers/users.controllers";
 
 const router = express.Router();
 
@@ -83,13 +88,31 @@ router.post("/users", createUserController);
  *       - in: path
  *         name: id
  *         required: true
- *         description: Apt to delete users by id.
+ *         description: Api to delete users by id.
  *         schema:
  *           type: string
  *     responses:
  *       '200':
  *         description: A single user.
  */
-router.delete("/users/:id", deleteUser);
+/**
+ * @swagger
+ * /users/{id}:
+ *   put:
+ *     summary: Update user by ID.
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: Api to update users by id.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: A single user.
+ */
+
+router.put("/users/:id", updateUserController);
 
 export default router;

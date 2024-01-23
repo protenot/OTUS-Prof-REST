@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { USERS, updateUserList } from "../db";
+import { USERS, updateUser, updateUserList } from "../db";
 import { PartialUsersType, User } from "../models/user.model";
 import { Request, Response } from "express";
 
@@ -32,7 +32,6 @@ export const deleteUser = (req: Request, res: Response): void => {
   res.status(200).json({ message: `User '${userId}' deleted` });
 };
 
-
 export const updateUserController = (req: Request, res: Response): void => {
   const userId = req.params.id;
   const foundUser = USERS.find((user) => user.id === userId) as User;
@@ -47,7 +46,7 @@ export const updateUserController = (req: Request, res: Response): void => {
   foundUser.email = req.body.email;
   foundUser.role = req.body.role;
 
-  updateUserList(foundUser); // Метод updateUser должен обновлять данные пользователя в хранилище (например, в массиве USERS)
+  updateUser(foundUser);
 
   res.json(foundUser);
 };

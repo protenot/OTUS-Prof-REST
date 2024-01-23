@@ -23,9 +23,12 @@ export let USERS: User[] = [
 export const updateUserList = (newUsers: User[]) => {
   USERS = newUsers;
 };
-export const updateUser = (foundUser:User)=>{
-  
-}
+export const updateUser = (updateUser: User): void => {
+  const userIndex = USERS.findIndex((user) => user.id === updateUser.id);
+  if (userIndex !== -1) {
+    USERS[userIndex] = updateUser;
+  }
+};
 
 export let TASKS: Task[] = [
   {
