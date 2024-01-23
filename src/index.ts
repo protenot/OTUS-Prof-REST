@@ -289,3 +289,5 @@ export function checkNotAuthenticated(req: any, res: any, next: any) {
   }
   return next();
 }
+
+export { User, Comment };

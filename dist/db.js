@@ -9,7 +9,13 @@ exports.USERS = [
         email: "protenot@gmail.com",
         role: "User",
     },
-   
+    {
+        id: "2",
+        name: "Nestor",
+        surname: "Petrovich",
+        email: "nestor@gmail.com",
+        role: "Interviewer",
+    },
 ];
 const updateUserList = (newUsers) => {
     exports.USERS = newUsers;

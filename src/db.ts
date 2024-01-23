@@ -1,7 +1,9 @@
 import { v4 } from "uuid";
-import { UsersType, PartialUsersType, TasksType, CommentsType } from "./types";
+import { User, PartialUsersType } from "./models/user.model";
+import { Comment } from "./models/comment.model";
+import { Task } from "./models/task.model";
 
-export let USERS: UsersType[] = [
+export let USERS: User[] = [
   {
     id: "1",
     name: "Olga",
@@ -18,11 +20,11 @@ export let USERS: UsersType[] = [
   },
 ];
 
-export const updateUserList = (newUsers: UsersType[]) => {
+export const updateUserList = (newUsers: User[]) => {
   USERS = newUsers;
 };
 
-export let TASKS: TasksType[] = [
+export let TASKS: Task[] = [
   {
     id: "12345",
     description: "Здесь будет задача 1",
@@ -49,10 +51,10 @@ export let TASKS: TasksType[] = [
   },
 ];
 
-export const updateTasksList = (newTasks: TasksType[]) => {
+export const updateTasksList = (newTasks: Task[]) => {
   TASKS = newTasks;
 };
-export let COMMENTS: CommentsType[] = [
+export let COMMENTS: Comment[] = [
   {
     id: "15",
     idUser: "1",
@@ -66,6 +68,6 @@ export let COMMENTS: CommentsType[] = [
     commentText: "Это комментарий к задаче 12346",
   },
 ];
-export const updateCommentsList = (newComments: CommentsType[]) => {
+export const updateCommentsList = (newComments: Comment[]) => {
   COMMENTS = newComments;
 };
