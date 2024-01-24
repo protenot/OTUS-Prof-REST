@@ -174,19 +174,19 @@ app.delete("/logout", (req, res, next: NextFunction) => {
   res.json(foundUser);
 }); */
 //CRUD для tasks
-app.get("/tasks", (req, res) => {
+/* app.get("/tasks", (req, res) => {
   res.json(TASKS);
-});
-app.get("/tasks/:id", (req, res) => {
+}); */
+/* app.get("/tasks/:id", (req, res) => {
   const foundTask = TASKS.find((c) => c.id === req.params.id);
   if (!foundTask) {
     res.sendStatus(404);
     return;
   }
   res.json(foundTask);
-});
+}); */
 
-app.delete("/tasks/:id", (req, res) => {
+/* app.delete("/tasks/:id", (req, res) => {
   const user = req.user as User;
   //console.log(user)
   if (user && user.role === "Interviewer") {
@@ -196,9 +196,9 @@ app.delete("/tasks/:id", (req, res) => {
   } else {
     res.status(403).json({ message: "Permission denied" });
   }
-});
+}); */
 
-app.put("/tasks/:id", (req, res) => {
+/* app.put("/tasks/:id", (req, res) => {
   const foundTask = TASKS.find((c) => c.id === req.params.id);
   if (!foundTask) {
     res.sendStatus(404);
@@ -210,10 +210,10 @@ app.put("/tasks/:id", (req, res) => {
   foundTask.language = req.body.language;
   foundTask.tag = req.body.tag;
   res.json(foundTask);
-});
+}); */
 
 //CRUDE для комментариев
-app.get("/comments", (req, res) => {
+/* app.get("/comments", (req, res) => {
   const idUser = req.query.idUser as string;
   const idTask = req.query.idTask as string;
 
@@ -231,15 +231,15 @@ app.get("/comments", (req, res) => {
   }
 
   res.json(filteredComments);
-});
+}); */
 
-app.get("/comments/:id", (req, res) => {
+/* app.get("/comments/:id", (req, res) => {
   const id = req.params.id;
   const taskComments = COMMENTS.filter((comment) => comment.id === id);
   res.json(taskComments);
-});
+}); */
 
-app.post("/comments", (req, res) => {
+/* app.post("/comments", (req, res) => {
   const { idUser, idTask, commentText } = req.body;
   if (!idUser || !idTask || !commentText) {
     return res.status(400).json({
@@ -255,7 +255,7 @@ app.post("/comments", (req, res) => {
   };
   createComment(newComment);
   res.json({ message: "Комментарий успешно создан", comment: newComment });
-});
+}); */
 app.put("/comments/:id", (req, res) => {
   const foundComment = COMMENTS.find((c) => c.id === req.params.id);
   if (!foundComment) {

@@ -157,76 +157,83 @@ exports.app.delete("/logout", (req, res, next) => {
   res.json(foundUser);
 }); */
 //CRUD для tasks
-exports.app.get("/tasks", (req, res) => {
-    res.json(db_1.TASKS);
-});
-exports.app.get("/tasks/:id", (req, res) => {
-    const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
-    if (!foundTask) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundTask);
-});
-exports.app.delete("/tasks/:id", (req, res) => {
-    const user = req.user;
-    //console.log(user)
-    if (user && user.role === "Interviewer") {
-        const updatedTasks = db_1.TASKS.filter((c) => c.id !== req.params.id);
-        (0, db_1.updateTasksList)(updatedTasks);
-        res.status(200).json({ message: `Task '${req.params.id}' deleted` });
-    }
-    else {
-        res.status(403).json({ message: "Permission denied" });
-    }
-});
-exports.app.put("/tasks/:id", (req, res) => {
-    const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
-    if (!foundTask) {
-        res.sendStatus(404);
-        return;
-    }
-    foundTask.description = req.body.description;
-    foundTask.solution = req.body.solution;
-    foundTask.complexity = req.body.complexity;
-    foundTask.language = req.body.language;
-    foundTask.tag = req.body.tag;
-    res.json(foundTask);
-});
+/* app.get("/tasks", (req, res) => {
+  res.json(TASKS);
+}); */
+/* app.get("/tasks/:id", (req, res) => {
+  const foundTask = TASKS.find((c) => c.id === req.params.id);
+  if (!foundTask) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundTask);
+}); */
+/* app.delete("/tasks/:id", (req, res) => {
+  const user = req.user as User;
+  //console.log(user)
+  if (user && user.role === "Interviewer") {
+    const updatedTasks = TASKS.filter((c) => c.id !== req.params.id);
+    updateTasksList(updatedTasks);
+    res.status(200).json({ message: `Task '${req.params.id}' deleted` });
+  } else {
+    res.status(403).json({ message: "Permission denied" });
+  }
+}); */
+/* app.put("/tasks/:id", (req, res) => {
+  const foundTask = TASKS.find((c) => c.id === req.params.id);
+  if (!foundTask) {
+    res.sendStatus(404);
+    return;
+  }
+  foundTask.description = req.body.description;
+  foundTask.solution = req.body.solution;
+  foundTask.complexity = req.body.complexity;
+  foundTask.language = req.body.language;
+  foundTask.tag = req.body.tag;
+  res.json(foundTask);
+}); */
 //CRUDE для комментариев
-exports.app.get("/comments", (req, res) => {
-    const idUser = req.query.idUser;
-    const idTask = req.query.idTask;
-    let filteredComments = db_1.COMMENTS;
-    if (idUser) {
-        filteredComments = filteredComments.filter((comment) => comment.idUser === idUser);
-    }
-    if (idTask) {
-        filteredComments = filteredComments.filter((comment) => comment.idTask === idTask);
-    }
-    res.json(filteredComments);
-});
-exports.app.get("/comments/:id", (req, res) => {
-    const id = req.params.id;
-    const taskComments = db_1.COMMENTS.filter((comment) => comment.id === id);
-    res.json(taskComments);
-});
-exports.app.post("/comments", (req, res) => {
-    const { idUser, idTask, commentText } = req.body;
-    if (!idUser || !idTask || !commentText) {
-        return res.status(400).json({
-            error: "Необходимо передать idUser, idTask и comment в теле запроса",
-        });
-    }
-    const newComment = {
-        id: (0, uuid_1.v4)(),
-        idUser,
-        idTask,
-        commentText,
-    };
-    (0, exports.createComment)(newComment);
-    res.json({ message: "Комментарий успешно создан", comment: newComment });
-});
+/* app.get("/comments", (req, res) => {
+  const idUser = req.query.idUser as string;
+  const idTask = req.query.idTask as string;
+
+  let filteredComments = COMMENTS;
+  if (idUser) {
+    filteredComments = filteredComments.filter(
+      (comment) => comment.idUser === idUser,
+    );
+  }
+
+  if (idTask) {
+    filteredComments = filteredComments.filter(
+      (comment) => comment.idTask === idTask,
+    );
+  }
+
+  res.json(filteredComments);
+}); */
+/* app.get("/comments/:id", (req, res) => {
+  const id = req.params.id;
+  const taskComments = COMMENTS.filter((comment) => comment.id === id);
+  res.json(taskComments);
+}); */
+/* app.post("/comments", (req, res) => {
+  const { idUser, idTask, commentText } = req.body;
+  if (!idUser || !idTask || !commentText) {
+    return res.status(400).json({
+      error: "Необходимо передать idUser, idTask и comment в теле запроса",
+    });
+  }
+
+  const newComment: Comment = {
+    id: v4(),
+    idUser,
+    idTask,
+    commentText,
+  };
+  createComment(newComment);
+  res.json({ message: "Комментарий успешно создан", comment: newComment });
+}); */
 exports.app.put("/comments/:id", (req, res) => {
     const foundComment = db_1.COMMENTS.find((c) => c.id === req.params.id);
     if (!foundComment) {

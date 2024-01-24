@@ -73,6 +73,18 @@ export let COMMENTS: Comment[] = [
     idTask: "12346",
     commentText: "Это комментарий к задаче 12346",
   },
+  {
+    id: "17",
+    idUser: "2",
+    idTask: "12345",
+    commentText: "Это комментарий юзера 2 к задаче 12345",
+  },
+  {
+    id: "18",
+    idUser: "1",
+    idTask: "12347",
+    commentText: "Это комментарий к задаче 12347",
+  },
 ];
 export const updateCommentsList = (newComments: Comment[]) => {
   COMMENTS = newComments;

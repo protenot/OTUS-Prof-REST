@@ -1,4 +1,4 @@
-import { USERS, updateUserList } from "../db";
+import { TASKS, USERS, updateUserList } from "../db";
 
 import express from "express";
 import passport from "passport";
@@ -8,6 +8,14 @@ import {
   deleteUser,
   updateUserController,
 } from "../controllers/users.controllers";
+import {
+  deleteTask,
+  updateTaskController,
+} from "../controllers/tasks.controllers";
+import {
+  getCommentById,
+  getComments,
+} from "../controllers/comments.controller";
 
 const router = express.Router();
 
@@ -63,13 +71,13 @@ router.get("/users/:id", (req, res) => {
  * @swagger
  * /users:
  *   post:
- *     summary: Post new user .
+ *     summary: Add new user.
  *     tags: [Users]
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: Api to add new users.
+ *         description: ID of the user.
  *         schema:
  *           type: string
  *     responses:
@@ -88,13 +96,15 @@ router.post("/users", createUserController);
  *       - in: path
  *         name: id
  *         required: true
- *         description: Api to delete users by id.
+ *         description: ID of the user.
  *         schema:
  *           type: string
  *     responses:
  *       '200':
  *         description: A single user.
  */
+
+router.delete("/users/:id", deleteUser);
 /**
  * @swagger
  * /users/{id}:
@@ -105,7 +115,7 @@ router.post("/users", createUserController);
  *       - in: path
  *         name: id
  *         required: true
- *         description: Api to update users by id.
+ *         description: ID of the user.
  *         schema:
  *           type: string
  *     responses:
@@ -114,5 +124,119 @@ router.post("/users", createUserController);
  */
 
 router.put("/users/:id", updateUserController);
+
+/**
+ * @swagger
+ * tags:
+ *   name: Tasks
+ *   description: API for managing tasks
+ */
+/**
+ * @swagger
+ * /tasks:
+ *   get:
+ *     summary: Get a list of tasks.
+ *     tags: [Tasks]
+ *     responses:
+ *       '200':
+ *         description: A list of tasks.
+ */
+router.get("/tasks", (req, res) => {
+  res.json(TASKS);
+});
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   get:
+ *     summary: Get task by ID.
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the task.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: A single task.
+ */
+
+router.get("/tasks/:id", (req, res) => {
+  const foundTask = TASKS.find((c) => c.id === req.params.id);
+  if (!foundTask) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundTask);
+});
+
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   delete:
+ *     summary: Delete task by ID.
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the task.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: A single task.
+ */
+
+router.delete("/tasks/:id", deleteTask);
+/**
+ * @swagger
+ * /tasks/{id}:
+ *   put:
+ *     summary: Update user by ID.
+ *     tags: [Tasks]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the task.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: A single user.
+ */
+
+router.put("/tasks/:id", updateTaskController);
+/**
+ * @swagger
+ * tags:
+ *   name: Comments
+ *   description: API for managing comments
+ */
+/**
+ * @swagger
+ * /comments:
+ *   get:
+ *     summary: Get a list of comments.
+ *     tags: [Comments]
+ *     responses:
+ *       '200':
+ *         description: A list of comments.
+ */
+router.get("/comments", getComments);
+/**
+ * @swagger
+ * /comments/{id}:
+ *   get:
+ *     summary: Get comment by ID.
+ *     tags: [Comments]
+ *
+ *     responses:
+ *       '200':
+ *         description: A single comment.
+ */
+router.get("/comments/:id", getCommentById);
 
 export default router;
