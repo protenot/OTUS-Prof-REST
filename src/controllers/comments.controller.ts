@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { COMMENTS } from "../db";
+import { COMMENTS, updateCommentsList } from "../db";
 import { v4 } from "uuid";
 import { createComment } from "..";
 import { Comment } from "../models/comment.model";
@@ -45,5 +45,24 @@ export const createCommentController = (req: Request, res: Response) => {
     commentText,
   };
   createComment(newComment);
-  res.json({ message: "Комментарий успешно создан", comment: newComment });
+  res
+    .status(200)
+    .json({ message: "Комментарий успешно создан", comment: newComment });
+};
+
+export const updateCommentsController = (req: Request, res: Response) => {
+  const foundComment = COMMENTS.find((c) => c.id === req.params.id);
+  if (!foundComment) {
+    res.sendStatus(404);
+    return;
+  }
+  foundComment.commentText = req.body.commentText;
+
+  res.json({ message: "Комментарий успешно изменен", comment: foundComment });
+};
+
+export const deleteComment = (req: Request, res: Response) => {
+  const updatedComments = COMMENTS.filter((c) => c.id !== req.params.id);
+  updateCommentsList(updatedComments);
+  res.status(200).json({ message: `Comment '${req.params.id}' deleted` });
 };

@@ -13,8 +13,11 @@ import {
   updateTaskController,
 } from "../controllers/tasks.controllers";
 import {
+  createCommentController,
+  deleteComment,
   getCommentById,
   getComments,
+  updateCommentsController,
 } from "../controllers/comments.controller";
 
 const router = express.Router();
@@ -238,5 +241,42 @@ router.get("/comments", getComments);
  *         description: A single comment.
  */
 router.get("/comments/:id", getCommentById);
+
+/**
+ * @swagger
+ * /comments:
+ *   post:
+ *     summary: Add new comment.
+ *     tags: [Comments]
+ *     responses:
+ *       '200':
+ *         description: A list of comments.
+ */
+router.post("/comments", createCommentController);
+
+/**
+ * @swagger
+ * /comments/{id}:
+ *   put:
+ *     summary: Update comment by ID.
+ *     tags: [Comments]
+ *     responses:
+ *       '200':
+ *         description: A single comment.
+ */
+
+router.put("/comments/:id", updateCommentsController);
+/**
+ * @swagger
+ * /comments/{id}:
+ *   delete:
+ *     summary: Delete comment by ID.
+ *     tags: [Comments]
+ *     responses:
+ *       '200':
+ *         description: A single comment.
+ */
+
+router.delete("/comments/:id", deleteComment);
 
 export default router;
