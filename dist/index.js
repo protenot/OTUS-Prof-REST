@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkNotAuthenticated = exports.checkAuthenticated = exports.createComment = exports.app = void 0;
+exports.checkNotAuthenticated = exports.checkAuthenticated = exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const uuid_1 = require("uuid");
@@ -58,19 +58,6 @@ exports.app.use(express_1.default.urlencoded({ extended: false }));
 exports.app.use((0, method_override_1.default)("_method"));
 exports.app.use("/", routes_1.default);
 exports.app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
-/* export const createUser = (user: PartialUsersType): User => {
-  const userId: string = v4();
-  const newUser:User = {
-    id: userId,
-    ...user,
-  };
-  USERS.push(newUser);
-  return newUser;
-}; */
-const createComment = (comment) => {
-    db_1.COMMENTS.push(comment);
-};
-exports.createComment = createComment;
 exports.app.get("/", checkAuthenticated, (req, res) => {
     if (req.user) {
         const { name } = req.user;

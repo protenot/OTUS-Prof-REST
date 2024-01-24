@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import { COMMENTS, updateCommentsList } from "../db";
 import { v4 } from "uuid";
-import { createComment } from "..";
 import { Comment } from "../models/comment.model";
+
+export const createComment = (comment: Comment) => {
+  COMMENTS.push(comment);
+};
 
 export const getComments = (req: Request, res: Response): void => {
   const idUser = req.query.idUser as string;

@@ -1,17 +1,8 @@
 import express, { NextFunction } from "express";
 import path from "path";
 import { v4 } from "uuid";
-
-import { User, PartialUsersType } from "./models/user.model";
-import { Comment } from "./models/comment.model";
-import {
-  TASKS,
-  USERS,
-  COMMENTS,
-  updateUserList,
-  updateTasksList,
-  updateCommentsList,
-} from "./db";
+import { User } from "./models/user.model";
+import { USERS } from "./db";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import flash from "express-flash";
@@ -65,20 +56,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-/* export const createUser = (user: PartialUsersType): User => {
-  const userId: string = v4();
-  const newUser:User = {
-    id: userId,
-    ...user,
-  };
-  USERS.push(newUser);
-  return newUser;
-}; */
-
-export const createComment = (comment: Comment) => {
-  COMMENTS.push(comment);
-};
 
 app.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {
@@ -144,5 +121,3 @@ export function checkNotAuthenticated(req: any, res: any, next: any) {
   }
   return next();
 }
-
-export { User, Comment };
