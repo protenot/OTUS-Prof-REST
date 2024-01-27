@@ -106,9 +106,9 @@ app.delete("/logout", (req, res, next: NextFunction) => {
   });
 });
 
-app.listen(port, () => {
+/* app.listen(port, () => {
   console.log(`App listening port ${port}`);
-});
+}); */
 export function checkAuthenticated(req: any, res: any, next: any) {
   if (req.isAuthenticated()) {
     return next();

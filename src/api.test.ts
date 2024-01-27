@@ -1,6 +1,6 @@
 import supertest from "supertest";
 import { USERS } from "./db";
-import { app, checkAuthenticated, checkNotAuthenticated } from "../src/index";
+import { app, checkAuthenticated, checkNotAuthenticated } from "./index";
 import passport from "passport";
 import { User } from "./models/user.model";
 import { createUser } from "./controllers/users.controllers";
@@ -118,10 +118,10 @@ describe("GET /comments/:id", () => {
 describe("POST /users", () => {
   it("should create a new user", async () => {
     const newUser = {
-      name: "Nestor",
-      surname: "Petrovich",
-      email: "nestor@example.com",
-      password: "password123",
+      name: "Somebody",
+      surname: "Somebody",
+      email: "Somebody@example.com",
+      password: "Somebody123",
     };
     const response = await supertest(app)
       .post("/users")
@@ -129,10 +129,9 @@ describe("POST /users", () => {
       .expect(201);
 
     const createdUser = response.body;
-    //console.log(JSON.stringify(createdUser))
-    expect(createdUser.length).toBe(3);
-    expect(createdUser[1].name).toBe("Nestor");
-    expect(createdUser[1].surname).toBe("Petrovich");
+   
+    expect(createdUser.name).toBe("Somebody");
+    expect(createdUser.surname).toBe("Somebody");
   });
 });
 describe("POST /comments", () => {

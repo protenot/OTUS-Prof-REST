@@ -102,9 +102,9 @@ exports.app.delete("/logout", (req, res, next) => {
         res.redirect("/login");
     });
 });
-exports.app.listen(port, () => {
-    console.log(`App listening port ${port}`);
-});
+/* app.listen(port, () => {
+  console.log(`App listening port ${port}`);
+}); */
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
