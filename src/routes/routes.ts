@@ -1,7 +1,8 @@
 import { TASKS, USERS, updateUserList } from "../db";
-
+import bcrypt from "bcrypt";
 import express from "express";
 import passport from "passport";
+import { v4 } from "uuid";
 import {
   createUser,
   createUserController,
@@ -19,6 +20,9 @@ import {
   getComments,
   updateCommentsController,
 } from "../controllers/comments.controller";
+import { checkAuthenticated, checkNotAuthenticated } from "../controllers/auth.controllers";
+import { User } from "../models/user.model";
+import { NextFunction } from "express";
 
 const router = express.Router();
 
@@ -278,5 +282,55 @@ router.put("/comments/:id", updateCommentsController);
  */
 
 router.delete("/comments/:id", deleteComment);
+
+router.get("/", checkAuthenticated, (req, res) => {
+  if (req.user) {
+    const { name } = req.user as User;
+    res.render("index.ejs", { name });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.get("/login", checkNotAuthenticated, (req, res) => {
+  console.log("Flash messages:", req.flash("error"));
+  res.render("login", { messages: req.flash("error") });
+});
+
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+);
+router.get("/register", checkNotAuthenticated, (req, res) => {
+  res.render("register.ejs");
+});
+
+router.post("/register", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    USERS.push({
+      id: v4(),
+      name: req.body.name,
+      email: req.body.email,
+      password: hashedPassword,
+    });
+    res.redirect("/login");
+  } catch {
+    res.redirect("/register");
+  }
+});
+
+router.delete("/logout", (req, res, next: NextFunction) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login");
+  });
+});
 
 export default router;

@@ -1,23 +1,12 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkNotAuthenticated = exports.checkAuthenticated = exports.app = void 0;
+exports.app = void 0;
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
-const uuid_1 = require("uuid");
 const db_1 = require("./db");
-const bcrypt_1 = __importDefault(require("bcrypt"));
 const passport_1 = __importDefault(require("passport"));
 const express_flash_1 = __importDefault(require("express-flash"));
 const express_session_1 = __importDefault(require("express-session"));
@@ -58,64 +47,6 @@ exports.app.use(express_1.default.urlencoded({ extended: false }));
 exports.app.use((0, method_override_1.default)("_method"));
 exports.app.use("/", routes_1.default);
 exports.app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
-exports.app.get("/", checkAuthenticated, (req, res) => {
-    if (req.user) {
-        const { name } = req.user;
-        res.render("index.ejs", { name });
-    }
-    else {
-        res.redirect("/login");
-    }
+exports.app.listen(port, () => {
+    console.log(`App listening port ${port}`);
 });
-exports.app.get("/login", checkNotAuthenticated, (req, res) => {
-    console.log("Flash messages:", req.flash("error"));
-    res.render("login", { messages: req.flash("error") });
-});
-exports.app.post("/login", passport_1.default.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/login",
-    failureFlash: true,
-}));
-exports.app.get("/register", checkNotAuthenticated, (req, res) => {
-    res.render("register.ejs");
-});
-exports.app.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const hashedPassword = yield bcrypt_1.default.hash(req.body.password, 10);
-        db_1.USERS.push({
-            id: (0, uuid_1.v4)(),
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword,
-        });
-        res.redirect("/login");
-    }
-    catch (_a) {
-        res.redirect("/register");
-    }
-}));
-exports.app.delete("/logout", (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return next(err);
-        }
-        res.redirect("/login");
-    });
-});
-/* app.listen(port, () => {
-  console.log(`App listening port ${port}`);
-}); */
-function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect("/login");
-}
-exports.checkAuthenticated = checkAuthenticated;
-function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return res.redirect("/");
-    }
-    return next();
-}
-exports.checkNotAuthenticated = checkNotAuthenticated;
