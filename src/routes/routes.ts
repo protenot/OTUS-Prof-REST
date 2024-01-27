@@ -1,10 +1,9 @@
-import { TASKS, USERS, updateUserList } from "../db";
+import { TASKS, USERS } from "../db";
 import bcrypt from "bcrypt";
 import express from "express";
 import passport from "passport";
 import { v4 } from "uuid";
 import {
-  createUser,
   createUserController,
   deleteUser,
   updateUserController,
@@ -20,7 +19,10 @@ import {
   getComments,
   updateCommentsController,
 } from "../controllers/comments.controller";
-import { checkAuthenticated, checkNotAuthenticated } from "../controllers/auth.controllers";
+import {
+  checkAuthenticated,
+  checkNotAuthenticated,
+} from "../controllers/auth.controllers";
 import { User } from "../models/user.model";
 import { NextFunction } from "express";
 

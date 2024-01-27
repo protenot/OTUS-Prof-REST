@@ -11,7 +11,6 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes/routes";
 
-
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
@@ -56,10 +55,6 @@ app.use(methodOverride("_method"));
 app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-
-
 app.listen(port, () => {
   console.log(`App listening port ${port}`);
 });
-
-

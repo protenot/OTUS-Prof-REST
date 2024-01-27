@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+  (this && this.__importDefault) ||
+  function (mod) {
+    return mod && mod.__esModule ? mod : { default: mod };
+  };
 Object.defineProperty(exports, "__esModule", { value: true });
 const db_1 = require("../db");
 const express_1 = __importDefault(require("express"));
@@ -26,7 +28,7 @@ const router = express_1.default.Router();
  *         description: A list of users.
  */
 router.get("/users", (req, res) => {
-    res.status(200).json(db_1.USERS);
+  res.status(200).json(db_1.USERS);
 });
 /**
  * @swagger
@@ -46,14 +48,14 @@ router.get("/users", (req, res) => {
  *         description: A single user.
  */
 router.get("/users/:id", (req, res) => {
-    //const userId = req.params.id;
-    //res.json({ id: userId, name: `User ${userId}` });
-    const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
-    if (!foundUser) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundUser);
+  //const userId = req.params.id;
+  //res.json({ id: userId, name: `User ${userId}` });
+  const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
+  if (!foundUser) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundUser);
 });
 /**
  * @swagger
@@ -126,7 +128,7 @@ router.put("/users/:id", users_controllers_1.updateUserController);
  *         description: A list of tasks.
  */
 router.get("/tasks", (req, res) => {
-    res.json(db_1.TASKS);
+  res.json(db_1.TASKS);
 });
 /**
  * @swagger
@@ -146,12 +148,12 @@ router.get("/tasks", (req, res) => {
  *         description: A single task.
  */
 router.get("/tasks/:id", (req, res) => {
-    const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
-    if (!foundTask) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundTask);
+  const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
+  if (!foundTask) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundTask);
 });
 /**
  * @swagger

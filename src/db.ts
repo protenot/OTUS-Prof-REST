@@ -1,5 +1,4 @@
-import { v4 } from "uuid";
-import { User, PartialUsersType } from "./models/user.model";
+import { User } from "./models/user.model";
 import { Comment } from "./models/comment.model";
 import { Task } from "./models/task.model";
 

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TASKS, updateTasksList, updateUser } from "../db";
+import { TASKS, updateTasksList } from "../db";
 import { User } from "../models/user.model";
 import { Task } from "../models/task.model";
 

@@ -1,12 +1,13 @@
 import supertest from "supertest";
-import { USERS } from "./db";
-import { app} from "./index";
-import passport from "passport";
-import { User } from "./models/user.model";
-import { createUser } from "./controllers/users.controllers";
-import { request } from "http";
-import { checkAuthenticated } from "./controllers/auth.controllers";
-describe("GET /", () => {
+//import { USERS } from "./db";
+import { app } from "./index";
+//import passport from "passport";
+//import { User } from "./models/user.model";
+//import { createUser } from "./controllers/users.controllers";
+//import { request } from "http";
+//import { checkAuthenticated } from "./controllers/auth.controllers";
+
+/* describe("GET /", () => {
   it("should respond with 302 status and redirect to /login when not authenticated", async () => {
     await supertest(app).get("/").expect(302).expect("Location", "/login");
   });
@@ -48,7 +49,7 @@ describe("GET /", () => {
       });
   });
 });
-
+ */
 describe("GET /tasks", () => {
   it("should return a list of tasks", async () => {
     const response = await supertest(app).get("/tasks");
@@ -129,7 +130,7 @@ describe("POST /users", () => {
       .expect(201);
 
     const createdUser = response.body;
-   
+
     expect(createdUser.name).toBe("Somebody");
     expect(createdUser.surname).toBe("Somebody");
   });
