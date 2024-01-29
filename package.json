@@ -6,8 +6,8 @@
   "author": "Olga_Belaya <protenot@yandex.ru>",
   "license": "MIT",
   "scripts": {
-    "lint": "prettier --check . && eslint .",
-    "lint:fix": "prettier --write . && eslint . --fix ",
+    "lint": "prettier --check . && npx eslint .",
+    "lint:fix": "prettier --write . && npx eslint . --fix ",
     "watch": "yarn tsc -w",
     "dev": " nodemon .\\dist\\index.js",
     "copy-views": "copyfiles -u 1 views/**/* dist/views",
