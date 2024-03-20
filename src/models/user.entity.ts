@@ -7,12 +7,12 @@ module.exports = new EntitySchema({
         id:{
             primary:true,
             type:"character varying",
-            length:25
+            length:1000
         },
        
         name:{
             type:"character varying",
-            length:25
+            length:100
         },
         email:{
             type:"text",
@@ -21,11 +21,11 @@ module.exports = new EntitySchema({
 
         role:{
             type:"character varying",
-            length:10
+            length:100
         },
         password:{
             type:"character varying",
-            length:30
+            length:1000
         },
     }
 })

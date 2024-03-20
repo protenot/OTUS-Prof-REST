@@ -1,4 +1,4 @@
-import { TASKS, USERS } from "../db";
+import { USERS } from "../db";
 import bcrypt from "bcrypt";
 import express from "express";
 import passport from "passport";
@@ -25,11 +25,7 @@ import {
 } from "../controllers/auth.controllers";
 import { User } from "../models/user.model";
 import { NextFunction } from "express";
-//import {myDataSource2Pg} from "../database/datasource";
-//import {getDataSource} from "../database/datasource";
 
-//import {Task} from "../models/task.entity"
-//import { initializeDataSource } from '../index';
 
 export const myDataSource2Pg = require('../database/datasource.js').default;
 
@@ -37,9 +33,9 @@ export async function initializeDataSource() {
   console.log('+++++++')
   await myDataSource2Pg.initialize();
 
-console.log('+++')
+
 }
-//console.log('name',initializeDataSource.name)
+
 const router = express.Router();
 
 initializeDataSource();
@@ -173,18 +169,18 @@ router.get("/tasks", async (req, res) => {
   try{
   console.log ("getting tasks")
  
-    //const AppDataSource = await getDataSource();
-    //const seasonRepo = AppDataSource.getRepository('Task');
-    // Your business logic
  
   const repo = await myDataSource2Pg.getRepository('Task');
   const result = await repo.find({
      select: {
          id: true,
-          description: true
+        description: true,
+        complexity:true,
+        language:true,
+        tag:true
     },
 
-    order: { id: 'DESC' }
+    order: { id: 'ASC' }
 });
 
   res.send(result);
@@ -210,9 +206,17 @@ router.get("/tasks", async (req, res) => {
  *         description: A single task.
  */
 
-router.get("/tasks/:id", (req, res) => {
-  const foundTask = TASKS.find((c) => c.id === req.params.id);
-  if (!foundTask) {
+router.get("/tasks/:id", async (req, res) => {
+  
+  const repo = await myDataSource2Pg.getRepository('Task');
+
+
+    const foundTask= await repo.findOne({
+      where:{
+        id:req.params.id
+      }
+    })  
+ if (!foundTask) {
     res.sendStatus(404);
     return;
   }
@@ -341,7 +345,7 @@ router.get("/login", checkNotAuthenticated, (req, res) => {
 router.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/tasks",
     failureRedirect: "/login",
     failureFlash: true,
   }),
@@ -352,15 +356,21 @@ router.get("/register", checkNotAuthenticated, (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
+    const repo = await myDataSource2Pg.getRepository('User');
+    console.log ('repo', repo)
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    USERS.push({
+    const savedUser=
+    await repo.save({
       id: v4(),
       name: req.body.name,
       email: req.body.email,
+      role:"User",
       password: hashedPassword,
     });
+    console.log('savedUser',savedUser)
     res.redirect("/login");
-  } catch {
+  } catch (error) {
+    console.error('Error saving user:', error);
     res.redirect("/register");
   }
 });

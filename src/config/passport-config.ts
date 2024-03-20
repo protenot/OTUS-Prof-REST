@@ -1,48 +1,52 @@
-import bcrypt from "bcrypt";
 
-import { Strategy as LocalStrategy } from "passport-local";
-import { User } from "../models/user.model";
-import passport from "passport";
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import bcrypt from 'bcrypt';
+import { User } from './models/user.model'; // Подключите модель пользователя из вашего приложения
+//import {getUserByEmail, getUserById} from '../controllers/auth.controllers'
 
 export default async function initialize(
   passport: passport.PassportStatic,
-  getUserByEmail: (email: string) => User|undefined,
-  getUserById:(id: string) => User|undefined,
+  getUserByEmail: (email: string) => Promise<User | undefined>,
+  getUserById: (id: string) => Promise<User | undefined>,
 ) {
   const authenticateUser = async (
     email: string,
     password: string,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    done: any, 
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   done: any,
   ) => {
-    const user = getUserByEmail(email);
-    console.log('user'+JSON.stringify(user));
-    console.log("passport"+JSON.stringify(passport))
-    if (user == null) {
-      console.log("No user with that email");
-      return done(null, false, { message: "No user with that email" });
-    }
     try {
-      if (await bcrypt.compare(password, user.password as string)) {
-        return done(null, user);
-      } else {
-        console.log("Password incorrect");
-        return done(null, false, { message: "Password incorrect" });
+      const user = await getUserByEmail(email);
+      console.log('email', email)
+      if (!user) {
+        return done(null, false, { message: 'No user with that email' });
       }
+      
+      const isPasswordMatch = await bcrypt.compare(password, user.password);
+      if (!isPasswordMatch) {
+        return done(null, false, { message: 'Password incorrect' });
+      }
+
+      return done(null, user);
     } catch (error) {
       return done(error);
     }
   };
 
-  passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUser));
-  console.log(authenticateUser);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  passport.serializeUser((user:any, done) => {
+  passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser));
+
+  passport.serializeUser((user: User, done) => {
     done(null, user.id);
   });
 
-  passport.deserializeUser((id: string, done) => {
-    const user = getUserById(id);
-    done(null, user);
+  passport.deserializeUser(async (id: string, done) => {
+    try {
+      const user = await getUserById(id);
+      console.log('id ',id)
+      done(null, user);
+    } catch (error) {
+      done(error);
+    }
   });
 }

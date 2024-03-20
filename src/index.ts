@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
-import { User } from "./models/user.model";
-import { USERS } from "./db";
+//import { User } from "./models/user.model";
+//import { USERS } from "./db";
 import passport from "passport";
 import flash from "express-flash";
 import session from "express-session";
@@ -10,7 +10,8 @@ import methodOverride from "method-override";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes/routes";
-import "reflect-metadata"
+import "reflect-metadata";
+import {getUserByEmail, getUserById} from './controllers/auth.controllers'
 
 /* export const myDataSource2Pg = require('./database/datasource.js').default;
 //const { initializeDataSource } = require('./datasource');
@@ -41,8 +42,8 @@ const swaggerSpec = swaggerJsdoc(options);
 
 initializePassport(
   passport,
-  (email: string) => USERS.find((user: User) => user.email === email),
-  (id: string) => USERS.find((user: User) => user.id === id),
+ getUserByEmail,
+ getUserById,
 );
 app.use(express.json());
 
@@ -56,6 +57,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "src/views"));
