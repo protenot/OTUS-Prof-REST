@@ -25,8 +25,27 @@ import {
 } from "../controllers/auth.controllers";
 import { User } from "../models/user.model";
 import { NextFunction } from "express";
+//import {myDataSource2Pg} from "../database/datasource";
+//import {getDataSource} from "../database/datasource";
 
+//import {Task} from "../models/task.entity"
+//import { initializeDataSource } from '../index';
+
+export const myDataSource2Pg = require('../database/datasource.js').default;
+
+export async function initializeDataSource() {
+  console.log('+++++++')
+  await myDataSource2Pg.initialize();
+
+console.log('+++')
+}
+//console.log('name',initializeDataSource.name)
 const router = express.Router();
+
+initializeDataSource();
+
+
+//const taskRepository = typeorm.getRepository(Task);
 
 /**
  * @swagger
@@ -150,9 +169,29 @@ router.put("/users/:id", updateUserController);
  *       '200':
  *         description: A list of tasks.
  */
-router.get("/tasks", (req, res) => {
-  res.json(TASKS);
+router.get("/tasks", async (req, res) => {
+  try{
+  console.log ("getting tasks")
+ 
+    //const AppDataSource = await getDataSource();
+    //const seasonRepo = AppDataSource.getRepository('Task');
+    // Your business logic
+ 
+  const repo = await myDataSource2Pg.getRepository('Task');
+  const result = await repo.find({
+     select: {
+         id: true,
+          description: true
+    },
+
+    order: { id: 'DESC' }
 });
+
+  res.send(result);
+}catch(error){
+  console.error("Error fetching tasks:", error);
+    res.status(500).json({ error: "Failed to fetch tasks" });
+}});
 /**
  * @swagger
  * /tasks/{id}:

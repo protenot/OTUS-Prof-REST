@@ -10,6 +10,15 @@ import methodOverride from "method-override";
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes/routes";
+import "reflect-metadata"
+
+/* export const myDataSource2Pg = require('./database/datasource.js').default;
+//const { initializeDataSource } = require('./datasource');
+export async function initializeDataSource() {
+ 
+  await myDataSource2Pg.initialize();
+console.log('+++',await myDataSource2Pg.initialize())
+} */
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
