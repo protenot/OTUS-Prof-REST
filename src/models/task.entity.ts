@@ -7,7 +7,7 @@ module.exports = new EntitySchema({
     id: {
       primary: true,
       type: "character varying",
-      length: 25,
+      length: 100,
     },
     description: {
       type: "text",
@@ -20,7 +20,7 @@ module.exports = new EntitySchema({
     },
     language: {
       type: "character varying",
-      length: 25,
+      length: 100,
     },
     tag: {
       type: "character varying",
@@ -28,14 +28,11 @@ module.exports = new EntitySchema({
     },
   },
   relations: {
-    
     anotherEntity: {
-        target: "Comment", 
-        type: 'one-to-one', 
-        joinColumn: { name: 'idTask' },
-        onDelete: 'CASCADE',
+      target: "Comment",
+      type: "one-to-one",
+      joinColumn: { name: "id" },
+      onDelete: "CASCADE",
     },
-    
-}
-
+  },
 });

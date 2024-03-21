@@ -1,60 +1,46 @@
-import { v4 } from "uuid";
-import { USERS, updateUser } from "../db";
-import { PartialUsersType, User } from "../models/user.model";
 import { Request, Response } from "express";
 import { myDataSource2Pg } from "../routes/routes";
-
-export const createUser = (user: PartialUsersType): User => {
-  const userId: string = v4();
-  const newUser: User = {
-    id: userId,
-    ...user,
-  };
-  USERS.push(newUser);
-  return newUser;
-};
-
-export const createUserController = (req: Request, res: Response): void => {
-  const newUser = createUser({
-    name: req.body.name,
-    surname: req.body.surname,
-    email: req.body.email,
-    role: "User",
-    password: req.body.password,
-  });
-
-  res.status(201).json(newUser);
-};
 
 export const deleteUser = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const userId = req.params.id;
-  const repo = myDataSource2Pg.getRepository("User");
-  //const updatedUsers = USERS.filter((user) => user.id !== userId);
-  //updateUserList(updatedUsers);
-  await repo.delete({
-    id: userId,
-  });
-  res.status(200).json({ message: `User '${userId}' deleted` });
+  try {
+    const userId = req.params.id;
+    const repo = myDataSource2Pg.getRepository("User");
+    const deleteResult = await repo.delete({
+      id: userId,
+    });
+
+    if (deleteResult.affected === 0) {
+      res.status(404).json({ message: `User with id '${userId}' not found` });
+    } else {
+      res
+        .status(200)
+        .json({ message: `User with id '${userId}' deleted successfully` });
+    }
+  } catch {
+    res.status(403).json({ message: "Permission denied" });
+  }
 };
 
-export const updateUserController = (req: Request, res: Response): void => {
-  const userId = req.params.id;
-  const foundUser = USERS.find((user) => user.id === userId) as User;
+export const updateUserController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const userId = req.params.id;
+    const repo = myDataSource2Pg.getRepository("User");
+    const toUpdate = { ...req.body };
+    const updateResult = await repo.update({ id: userId }, toUpdate);
+    if (updateResult.affected === 0) {
+      res.sendStatus(404);
+      return;
+    }
 
-  if (!foundUser) {
-    res.sendStatus(404);
-    return;
+    res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({ error: "Failed to update user" });
   }
-
-  foundUser.name = req.body.name;
-  foundUser.surname = req.body.surname;
-  foundUser.email = req.body.email;
-  foundUser.role = req.body.role;
-
-  updateUser(foundUser);
-
-  res.json(foundUser);
 };

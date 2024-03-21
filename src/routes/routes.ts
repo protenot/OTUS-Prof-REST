@@ -1,23 +1,23 @@
-import { USERS } from "../db";
+//import { USERS } from "../db";
 import bcrypt from "bcrypt";
 import express from "express";
 import passport from "passport";
 import { v4 } from "uuid";
 import {
-  createUserController,
   deleteUser,
   updateUserController,
 } from "../controllers/users.controllers";
 import {
+  createTask,
   deleteTask,
   updateTaskController,
 } from "../controllers/tasks.controllers";
 import {
-  createCommentController,
+  createComment,
   deleteComment,
   getCommentById,
   getComments,
-  updateCommentsController,
+  updateComments,
 } from "../controllers/comments.controller";
 import {
   checkAuthenticated,
@@ -56,8 +56,25 @@ initializeDataSource();
  *       '200':
  *         description: A list of users.
  */
-router.get("/users", (req, res) => {
-  res.status(200).json(USERS);
+router.get("/users", async (req, res) => {
+  try {
+    const repo = await myDataSource2Pg.getRepository("User");
+    const result = await repo.find({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+      },
+
+      order: { id: "ASC" },
+    });
+
+    res.send(result);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({ error: "Failed to fetch users" });
+  }
 });
 
 /**
@@ -77,36 +94,31 @@ router.get("/users", (req, res) => {
  *       '200':
  *         description: A single user.
  */
-router.get("/users/:id", (req, res) => {
-  //const userId = req.params.id;
-  //res.json({ id: userId, name: `User ${userId}` });
-  const foundUser = USERS.find((c) => c.id === req.params.id);
-  if (!foundUser) {
-    res.sendStatus(404);
-    return;
+router.get("/users/:id", async (req, res) => {
+  try {
+    const repo = await myDataSource2Pg.getRepository("User");
+
+    const foundUser = await repo.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!foundUser) {
+      res.status(404).send("User not found");
+      return;
+    }
+    res.json(foundUser);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).send("Internal Server Error");
   }
-  res.json(foundUser);
 });
-/**
- * @swagger
- * /users:
- *   post:
- *     summary: Add new user.
- *     tags: [Users]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID of the user.
- *         schema:
- *           type: string
- *     responses:
- *       '201':
- *         description: A list of users.
- */
 // есть ощущение, что данная процедура не нужна, так как
 //пользователь добавляется в процессе регистрации
-router.post("/users", createUserController);
+
+/*
+router.post("/users", createUserController); */
+
 /**
  * @swagger
  * /users/{id}:
@@ -223,6 +235,17 @@ router.get("/tasks/:id", async (req, res) => {
   }
 });
 
+/* @swagger
+* /tasks:
+*   post:
+*     summary: Post task.
+*     tags: [Tasks]
+*     responses:
+*       '200':
+*         description: A new task.
+*/
+
+router.post("/tasks", createTask);
 /**
  * @swagger
  * /tasks/{id}:
@@ -301,7 +324,7 @@ router.get("/comments/:id", getCommentById);
  *       '200':
  *         description: A list of comments.
  */
-router.post("/comments", createCommentController);
+router.post("/comments", createComment);
 
 /**
  * @swagger
@@ -314,7 +337,7 @@ router.post("/comments", createCommentController);
  *         description: A single comment.
  */
 
-router.put("/comments/:id", updateCommentsController);
+router.put("/comments/:id", updateComments);
 /**
  * @swagger
  * /comments/{id}:
@@ -345,7 +368,7 @@ router.get("/login", checkNotAuthenticated, (req, res) => {
 router.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/tasks",
+    successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true,
   }),

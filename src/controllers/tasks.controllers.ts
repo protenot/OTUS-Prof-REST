@@ -1,5 +1,28 @@
 import { Request, Response } from "express";
 import { myDataSource2Pg } from "../routes/routes";
+import { v4 } from "uuid";
+
+export const createTask = async (req: Request, res: Response) => {
+
+  try {
+    const repo = await myDataSource2Pg.getRepository("Task");
+  
+    const newTask = await repo.save({
+      id: v4(),
+      description:req.body.description,
+      solution:req.body.solution,
+      complexity: req.body.complexity,
+      language: req.body.language,
+      tag: req.body.tag
+     
+    });
+  
+    res.status(200).json({ message: "Задача успешно создана", id:newTask.id });
+  } catch (error) {
+    console.error("Error saving task:", error);
+    res.sendStatus(404);
+  }
+  }
 
 export const deleteTask = async (
   req: Request,

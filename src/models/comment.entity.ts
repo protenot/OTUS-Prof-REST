@@ -5,22 +5,21 @@ module.exports = new EntitySchemaComment({
   tableName: "comments",
   columns: {
     id: {
+        primary: true,
       type: "character varying",
-      length: 25,
+      length: 100,
     },
     idUser: {
-      primary: true,
+     
       type: "character varying",
-      length: 25,
+      length: 100,
     },
     idTask: {
       type: "character varying",
-      length: 25,
+      length: 100,
     },
     commentText: {
       type: "text",
     },
   },
-
-
 });

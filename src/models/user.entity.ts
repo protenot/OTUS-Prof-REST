@@ -28,15 +28,11 @@ module.exports = new EntitySchemaUser({
     },
   },
   relations: {
-    
     anotherEntity: {
-        target: "Comment", 
-        type: 'one-to-one', 
-        joinColumn: { name: 'idUser' },
-        onDelete: 'CASCADE',
+      target: "Comment",
+      type: "one-to-one",
+      joinColumn: { name: "id" },
+      onDelete: "CASCADE",
     },
-    
-}
-
-
+  },
 });
