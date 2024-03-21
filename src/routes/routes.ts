@@ -108,7 +108,8 @@ router.get("/users/:id", (req, res) => {
  *       '201':
  *         description: A list of users.
  */
-
+// есть ощущение, что данная процедура не нужна, так как 
+//пользователь добавляется в процессе регистрации
 router.post("/users", createUserController);
 /**
  * @swagger

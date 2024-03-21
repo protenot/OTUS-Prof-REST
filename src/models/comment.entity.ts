@@ -1,6 +1,6 @@
-export const EntitySchema = require('typeorm').EntitySchema;
+export const EntitySchemaComment = require('typeorm').EntitySchema;
 
-module.exports = new EntitySchema({
+module.exports = new EntitySchemaComment({
     name:"Comment",
     tableName:"comments",
     columns:{

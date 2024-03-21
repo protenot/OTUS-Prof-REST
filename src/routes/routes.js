@@ -1,16 +1,20 @@
-"use strict";
-var __importDefault =
-  (this && this.__importDefault) ||
-  function (mod) {
-    return mod && mod.__esModule ? mod : { default: mod };
-  };
-Object.defineProperty(exports, "__esModule", { value: true });
-const db_1 = require("../db");
-const express_1 = __importDefault(require("express"));
-const users_controllers_1 = require("../controllers/users.controllers");
-const tasks_controllers_1 = require("../controllers/tasks.controllers");
-const comments_controller_1 = require("../controllers/comments.controller");
-const router = express_1.default.Router();
+import { USERS } from "../db";
+import bcrypt from "bcrypt";
+import express from "express";
+import passport from "passport";
+import { v4 } from "uuid";
+import { createUserController, deleteUser, updateUserController, } from "../controllers/users.controllers";
+import { deleteTask, updateTaskController, } from "../controllers/tasks.controllers";
+import { createCommentController, deleteComment, getCommentById, getComments, updateCommentsController, } from "../controllers/comments.controller";
+import { checkAuthenticated, checkNotAuthenticated, } from "../controllers/auth.controllers";
+export const myDataSource2Pg = require('../database/datasource.js').default;
+export async function initializeDataSource() {
+    console.log('+++++++');
+    await myDataSource2Pg.initialize();
+}
+const router = express.Router();
+initializeDataSource();
+//const taskRepository = typeorm.getRepository(Task);
 /**
  * @swagger
  * tags:
@@ -28,7 +32,7 @@ const router = express_1.default.Router();
  *         description: A list of users.
  */
 router.get("/users", (req, res) => {
-  res.status(200).json(db_1.USERS);
+    res.status(200).json(USERS);
 });
 /**
  * @swagger
@@ -48,14 +52,14 @@ router.get("/users", (req, res) => {
  *         description: A single user.
  */
 router.get("/users/:id", (req, res) => {
-  //const userId = req.params.id;
-  //res.json({ id: userId, name: `User ${userId}` });
-  const foundUser = db_1.USERS.find((c) => c.id === req.params.id);
-  if (!foundUser) {
-    res.sendStatus(404);
-    return;
-  }
-  res.json(foundUser);
+    //const userId = req.params.id;
+    //res.json({ id: userId, name: `User ${userId}` });
+    const foundUser = USERS.find((c) => c.id === req.params.id);
+    if (!foundUser) {
+        res.sendStatus(404);
+        return;
+    }
+    res.json(foundUser);
 });
 /**
  * @swagger
@@ -74,7 +78,9 @@ router.get("/users/:id", (req, res) => {
  *       '201':
  *         description: A list of users.
  */
-router.post("/users", users_controllers_1.createUserController);
+// есть ощущение, что данная процедура не нужна, так как 
+//пользователь добавляется в процессе регистрации
+router.post("/users", createUserController);
 /**
  * @swagger
  * /users/{id}:
@@ -92,7 +98,7 @@ router.post("/users", users_controllers_1.createUserController);
  *       '200':
  *         description: A single user.
  */
-router.delete("/users/:id", users_controllers_1.deleteUser);
+router.delete("/users/:id", deleteUser);
 /**
  * @swagger
  * /users/{id}:
@@ -110,7 +116,7 @@ router.delete("/users/:id", users_controllers_1.deleteUser);
  *       '200':
  *         description: A single user.
  */
-router.put("/users/:id", users_controllers_1.updateUserController);
+router.put("/users/:id", updateUserController);
 /**
  * @swagger
  * tags:
@@ -127,8 +133,26 @@ router.put("/users/:id", users_controllers_1.updateUserController);
  *       '200':
  *         description: A list of tasks.
  */
-router.get("/tasks", (req, res) => {
-  res.json(db_1.TASKS);
+router.get("/tasks", async (req, res) => {
+    try {
+        console.log("getting tasks");
+        const repo = await myDataSource2Pg.getRepository('Task');
+        const result = await repo.find({
+            select: {
+                id: true,
+                description: true,
+                complexity: true,
+                language: true,
+                tag: true
+            },
+            order: { id: 'ASC' }
+        });
+        res.send(result);
+    }
+    catch (error) {
+        console.error("Error fetching tasks:", error);
+        res.status(500).json({ error: "Failed to fetch tasks" });
+    }
 });
 /**
  * @swagger
@@ -147,13 +171,18 @@ router.get("/tasks", (req, res) => {
  *       '200':
  *         description: A single task.
  */
-router.get("/tasks/:id", (req, res) => {
-  const foundTask = db_1.TASKS.find((c) => c.id === req.params.id);
-  if (!foundTask) {
-    res.sendStatus(404);
-    return;
-  }
-  res.json(foundTask);
+router.get("/tasks/:id", async (req, res) => {
+    const repo = await myDataSource2Pg.getRepository('Task');
+    const foundTask = await repo.findOne({
+        where: {
+            id: req.params.id
+        }
+    });
+    if (!foundTask) {
+        res.sendStatus(404);
+        return;
+    }
+    res.json(foundTask);
 });
 /**
  * @swagger
@@ -172,7 +201,7 @@ router.get("/tasks/:id", (req, res) => {
  *       '200':
  *         description: A single task.
  */
-router.delete("/tasks/:id", tasks_controllers_1.deleteTask);
+router.delete("/tasks/:id", deleteTask);
 /**
  * @swagger
  * /tasks/{id}:
@@ -190,7 +219,7 @@ router.delete("/tasks/:id", tasks_controllers_1.deleteTask);
  *       '200':
  *         description: A single user.
  */
-router.put("/tasks/:id", tasks_controllers_1.updateTaskController);
+router.put("/tasks/:id", updateTaskController);
 /**
  * @swagger
  * tags:
@@ -207,7 +236,7 @@ router.put("/tasks/:id", tasks_controllers_1.updateTaskController);
  *       '200':
  *         description: A list of comments.
  */
-router.get("/comments", comments_controller_1.getComments);
+router.get("/comments", getComments);
 /**
  * @swagger
  * /comments/{id}:
@@ -219,7 +248,7 @@ router.get("/comments", comments_controller_1.getComments);
  *       '200':
  *         description: A single comment.
  */
-router.get("/comments/:id", comments_controller_1.getCommentById);
+router.get("/comments/:id", getCommentById);
 /**
  * @swagger
  * /comments:
@@ -230,7 +259,7 @@ router.get("/comments/:id", comments_controller_1.getCommentById);
  *       '200':
  *         description: A list of comments.
  */
-router.post("/comments", comments_controller_1.createCommentController);
+router.post("/comments", createCommentController);
 /**
  * @swagger
  * /comments/{id}:
@@ -241,7 +270,7 @@ router.post("/comments", comments_controller_1.createCommentController);
  *       '200':
  *         description: A single comment.
  */
-router.put("/comments/:id", comments_controller_1.updateCommentsController);
+router.put("/comments/:id", updateCommentsController);
 /**
  * @swagger
  * /comments/{id}:
@@ -252,5 +281,54 @@ router.put("/comments/:id", comments_controller_1.updateCommentsController);
  *       '200':
  *         description: A single comment.
  */
-router.delete("/comments/:id", comments_controller_1.deleteComment);
-exports.default = router;
+router.delete("/comments/:id", deleteComment);
+router.get("/", checkAuthenticated, (req, res) => {
+    if (req.user) {
+        const { name } = req.user;
+        res.render("index.ejs", { name });
+    }
+    else {
+        res.redirect("/login");
+    }
+});
+router.get("/login", checkNotAuthenticated, (req, res) => {
+    console.log("Flash messages:", req.flash("error"));
+    res.render("login", { messages: req.flash("error") });
+});
+router.post("/login", passport.authenticate("local", {
+    successRedirect: "/tasks",
+    failureRedirect: "/login",
+    failureFlash: true,
+}));
+router.get("/register", checkNotAuthenticated, (req, res) => {
+    res.render("register.ejs");
+});
+router.post("/register", async (req, res) => {
+    try {
+        const repo = await myDataSource2Pg.getRepository('User');
+        console.log('repo', repo);
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const savedUser = await repo.save({
+            id: v4(),
+            name: req.body.name,
+            email: req.body.email,
+            role: "User",
+            password: hashedPassword,
+        });
+        console.log('savedUser', savedUser);
+        res.redirect("/login");
+    }
+    catch (error) {
+        console.error('Error saving user:', error);
+        res.redirect("/register");
+    }
+});
+router.delete("/logout", (req, res, next) => {
+    req.logout((err) => {
+        if (err) {
+            return next(err);
+        }
+        res.redirect("/login");
+    });
+});
+export default router;

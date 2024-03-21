@@ -1,6 +1,6 @@
-const EntitySchema = require('typeorm').EntitySchema;
+const EntitySchemaUser = require('typeorm').EntitySchema;
 
-module.exports = new EntitySchema({
+module.exports = new EntitySchemaUser({
     name:"User",
     tableName:"users",
     columns:{
