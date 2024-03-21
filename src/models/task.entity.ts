@@ -27,4 +27,15 @@ module.exports = new EntitySchema({
       length: 1000,
     },
   },
+  relations: {
+    
+    anotherEntity: {
+        target: "Comment", 
+        type: 'one-to-one', 
+        joinColumn: { name: 'idTask' },
+        onDelete: 'CASCADE',
+    },
+    
+}
+
 });
