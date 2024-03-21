@@ -11,7 +11,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes/routes";
 import "reflect-metadata";
-import { getUserByEmail, getUserById } from './controllers/auth.controllers';
+import { getUserByEmail, getUserById } from "./controllers/auth.controllers";
 /* export const myDataSource2Pg = require('./database/datasource.js').default;
 //const { initializeDataSource } = require('./datasource');
 export async function initializeDataSource() {
@@ -20,29 +20,31 @@ export async function initializeDataSource() {
 console.log('+++',await myDataSource2Pg.initialize())
 } */
 if (process.env.NODE_ENV !== "production") {
-    require("dotenv").config();
+  require("dotenv").config();
 }
 export const app = express();
 const port = 3000;
 const options = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "My API",
-            version: "1.0.0",
-        },
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "My API",
+      version: "1.0.0",
     },
-    apis: ["./src/routes/routes.ts"],
+  },
+  apis: ["./src/routes/routes.ts"],
 };
 const swaggerSpec = swaggerJsdoc(options);
 initializePassport(passport, getUserByEmail, getUserById);
 app.use(express.json());
 app.use(flash());
-app.use(session({
+app.use(
+  session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-}));
+  }),
+);
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
@@ -53,5 +55,5 @@ app.use(methodOverride("_method"));
 app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.listen(port, () => {
-    console.log(`App listening port ${port}`);
+  console.log(`App listening port ${port}`);
 });

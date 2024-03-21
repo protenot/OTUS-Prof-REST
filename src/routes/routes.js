@@ -3,14 +3,30 @@ import bcrypt from "bcrypt";
 import express from "express";
 import passport from "passport";
 import { v4 } from "uuid";
-import { createUserController, deleteUser, updateUserController, } from "../controllers/users.controllers";
-import { deleteTask, updateTaskController, } from "../controllers/tasks.controllers";
-import { createCommentController, deleteComment, getCommentById, getComments, updateCommentsController, } from "../controllers/comments.controller";
-import { checkAuthenticated, checkNotAuthenticated, } from "../controllers/auth.controllers";
-export const myDataSource2Pg = require('../database/datasource.js').default;
+import {
+  createUserController,
+  deleteUser,
+  updateUserController,
+} from "../controllers/users.controllers";
+import {
+  deleteTask,
+  updateTaskController,
+} from "../controllers/tasks.controllers";
+import {
+  createCommentController,
+  deleteComment,
+  getCommentById,
+  getComments,
+  updateCommentsController,
+} from "../controllers/comments.controller";
+import {
+  checkAuthenticated,
+  checkNotAuthenticated,
+} from "../controllers/auth.controllers";
+export const myDataSource2Pg = require("../database/datasource.js").default;
 export async function initializeDataSource() {
-    console.log('+++++++');
-    await myDataSource2Pg.initialize();
+  console.log("+++++++");
+  await myDataSource2Pg.initialize();
 }
 const router = express.Router();
 initializeDataSource();
@@ -32,7 +48,7 @@ initializeDataSource();
  *         description: A list of users.
  */
 router.get("/users", (req, res) => {
-    res.status(200).json(USERS);
+  res.status(200).json(USERS);
 });
 /**
  * @swagger
@@ -52,14 +68,14 @@ router.get("/users", (req, res) => {
  *         description: A single user.
  */
 router.get("/users/:id", (req, res) => {
-    //const userId = req.params.id;
-    //res.json({ id: userId, name: `User ${userId}` });
-    const foundUser = USERS.find((c) => c.id === req.params.id);
-    if (!foundUser) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundUser);
+  //const userId = req.params.id;
+  //res.json({ id: userId, name: `User ${userId}` });
+  const foundUser = USERS.find((c) => c.id === req.params.id);
+  if (!foundUser) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundUser);
 });
 /**
  * @swagger
@@ -78,7 +94,7 @@ router.get("/users/:id", (req, res) => {
  *       '201':
  *         description: A list of users.
  */
-// есть ощущение, что данная процедура не нужна, так как 
+// есть ощущение, что данная процедура не нужна, так как
 //пользователь добавляется в процессе регистрации
 router.post("/users", createUserController);
 /**
@@ -134,25 +150,24 @@ router.put("/users/:id", updateUserController);
  *         description: A list of tasks.
  */
 router.get("/tasks", async (req, res) => {
-    try {
-        console.log("getting tasks");
-        const repo = await myDataSource2Pg.getRepository('Task');
-        const result = await repo.find({
-            select: {
-                id: true,
-                description: true,
-                complexity: true,
-                language: true,
-                tag: true
-            },
-            order: { id: 'ASC' }
-        });
-        res.send(result);
-    }
-    catch (error) {
-        console.error("Error fetching tasks:", error);
-        res.status(500).json({ error: "Failed to fetch tasks" });
-    }
+  try {
+    console.log("getting tasks");
+    const repo = await myDataSource2Pg.getRepository("Task");
+    const result = await repo.find({
+      select: {
+        id: true,
+        description: true,
+        complexity: true,
+        language: true,
+        tag: true,
+      },
+      order: { id: "ASC" },
+    });
+    res.send(result);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
+    res.status(500).json({ error: "Failed to fetch tasks" });
+  }
 });
 /**
  * @swagger
@@ -172,17 +187,17 @@ router.get("/tasks", async (req, res) => {
  *         description: A single task.
  */
 router.get("/tasks/:id", async (req, res) => {
-    const repo = await myDataSource2Pg.getRepository('Task');
-    const foundTask = await repo.findOne({
-        where: {
-            id: req.params.id
-        }
-    });
-    if (!foundTask) {
-        res.sendStatus(404);
-        return;
-    }
-    res.json(foundTask);
+  const repo = await myDataSource2Pg.getRepository("Task");
+  const foundTask = await repo.findOne({
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (!foundTask) {
+    res.sendStatus(404);
+    return;
+  }
+  res.json(foundTask);
 });
 /**
  * @swagger
@@ -283,52 +298,53 @@ router.put("/comments/:id", updateCommentsController);
  */
 router.delete("/comments/:id", deleteComment);
 router.get("/", checkAuthenticated, (req, res) => {
-    if (req.user) {
-        const { name } = req.user;
-        res.render("index.ejs", { name });
-    }
-    else {
-        res.redirect("/login");
-    }
+  if (req.user) {
+    const { name } = req.user;
+    res.render("index.ejs", { name });
+  } else {
+    res.redirect("/login");
+  }
 });
 router.get("/login", checkNotAuthenticated, (req, res) => {
-    console.log("Flash messages:", req.flash("error"));
-    res.render("login", { messages: req.flash("error") });
+  console.log("Flash messages:", req.flash("error"));
+  res.render("login", { messages: req.flash("error") });
 });
-router.post("/login", passport.authenticate("local", {
+router.post(
+  "/login",
+  passport.authenticate("local", {
     successRedirect: "/tasks",
     failureRedirect: "/login",
     failureFlash: true,
-}));
+  }),
+);
 router.get("/register", checkNotAuthenticated, (req, res) => {
-    res.render("register.ejs");
+  res.render("register.ejs");
 });
 router.post("/register", async (req, res) => {
-    try {
-        const repo = await myDataSource2Pg.getRepository('User');
-        console.log('repo', repo);
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        const savedUser = await repo.save({
-            id: v4(),
-            name: req.body.name,
-            email: req.body.email,
-            role: "User",
-            password: hashedPassword,
-        });
-        console.log('savedUser', savedUser);
-        res.redirect("/login");
-    }
-    catch (error) {
-        console.error('Error saving user:', error);
-        res.redirect("/register");
-    }
+  try {
+    const repo = await myDataSource2Pg.getRepository("User");
+    console.log("repo", repo);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const savedUser = await repo.save({
+      id: v4(),
+      name: req.body.name,
+      email: req.body.email,
+      role: "User",
+      password: hashedPassword,
+    });
+    console.log("savedUser", savedUser);
+    res.redirect("/login");
+  } catch (error) {
+    console.error("Error saving user:", error);
+    res.redirect("/register");
+  }
 });
 router.delete("/logout", (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return next(err);
-        }
-        res.redirect("/login");
-    });
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/login");
+  });
 });
 export default router;

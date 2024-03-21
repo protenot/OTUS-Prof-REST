@@ -1,8 +1,8 @@
 import { v4 } from "uuid";
-import { USERS, updateUser} from "../db";
+import { USERS, updateUser } from "../db";
 import { PartialUsersType, User } from "../models/user.model";
 import { Request, Response } from "express";
-import{ myDataSource2Pg} from "../routes/routes"
+import { myDataSource2Pg } from "../routes/routes";
 
 export const createUser = (user: PartialUsersType): User => {
   const userId: string = v4();
@@ -26,14 +26,17 @@ export const createUserController = (req: Request, res: Response): void => {
   res.status(201).json(newUser);
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<void> => {
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const userId = req.params.id;
-  const repo = myDataSource2Pg.getRepository('User');
+  const repo = myDataSource2Pg.getRepository("User");
   //const updatedUsers = USERS.filter((user) => user.id !== userId);
   //updateUserList(updatedUsers);
   await repo.delete({
-    id:userId
-  })
+    id: userId,
+  });
   res.status(200).json({ message: `User '${userId}' deleted` });
 };
 

@@ -8,4 +8,3 @@ export interface User {
 }
 
 export type PartialUsersType = Omit<User, "id">;
-

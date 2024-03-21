@@ -1,31 +1,30 @@
-const EntitySchemaUser = require('typeorm').EntitySchema;
+const EntitySchemaUser = require("typeorm").EntitySchema;
 
 module.exports = new EntitySchemaUser({
-    name:"User",
-    tableName:"users",
-    columns:{
-        id:{
-            primary:true,
-            type:"character varying",
-            length:1000
-        },
-       
-        name:{
-            type:"character varying",
-            length:100
-        },
-        email:{
-            type:"text",
-            
-        },
+  name: "User",
+  tableName: "users",
+  columns: {
+    id: {
+      primary: true,
+      type: "character varying",
+      length: 1000,
+    },
 
-        role:{
-            type:"character varying",
-            length:100
-        },
-        password:{
-            type:"character varying",
-            length:1000
-        },
-    }
-})
+    name: {
+      type: "character varying",
+      length: 100,
+    },
+    email: {
+      type: "text",
+    },
+
+    role: {
+      type: "character varying",
+      length: 100,
+    },
+    password: {
+      type: "character varying",
+      length: 1000,
+    },
+  },
+});

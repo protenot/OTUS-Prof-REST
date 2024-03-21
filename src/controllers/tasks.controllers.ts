@@ -1,34 +1,44 @@
 import { Request, Response } from "express";
-import { TASKS, updateTasksList } from "../db";
-import { User } from "../models/user.model";
-import { Task } from "../models/task.model";
+import { myDataSource2Pg } from "../routes/routes";
 
-export const deleteTask = (req: Request, res: Response): void => {
-  const user = req.user as User;
-  if (user && user.role === "Interviewer") {
+export const deleteTask = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
     const taskId = req.params.id;
-    const updatedTasks = TASKS.filter((task) => task.id !== taskId);
-    updateTasksList(updatedTasks);
-    res.status(200).json({ message: `Task '${taskId}' deleted` });
-  } else {
+    const repo = myDataSource2Pg.getRepository("Task");
+    const deleteResult = await repo.delete({ id: taskId });
+
+    if (deleteResult.affected === 0) {
+      res.status(404).json({ message: `Task with id '${taskId}' not found` });
+    } else {
+      res
+        .status(200)
+        .json({ message: `Task with id '${taskId}' deleted successfully` });
+    }
+  } catch {
     res.status(403).json({ message: "Permission denied" });
   }
 };
 
-export const updateTaskController = (req: Request, res: Response): void => {
-  const taskId = req.params.id;
-  const foundTask = TASKS.find((task) => task.id === taskId) as Task;
+export const updateTaskController = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const taskId = req.params.id;
+    const repo = myDataSource2Pg.getRepository("Task");
+    const toUpdate = { ...req.body };
+    const updateResult = await repo.update({ id: taskId }, toUpdate);
+    if (updateResult.affected === 0) {
+      res.sendStatus(404);
+      return;
+    }
 
-  if (!foundTask) {
-    res.sendStatus(404);
-    return;
+    res.status(200).json({ message: "Task updated successfully" });
+  } catch (error) {
+    console.error("Error updating task:", error);
+    res.status(500).json({ error: "Failed to update task" });
   }
-
-  foundTask.description = req.body.description;
-  foundTask.solution = req.body.solution;
-  foundTask.complexity = req.body.complexity;
-  foundTask.language = req.body.language;
-  foundTask.tag = req.body.tag;
-
-  res.json(foundTask);
 };

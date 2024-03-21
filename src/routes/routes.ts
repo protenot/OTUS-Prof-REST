@@ -26,20 +26,16 @@ import {
 import { User } from "../models/user.model";
 import { NextFunction } from "express";
 
-
-export const myDataSource2Pg = require('../database/datasource.js').default;
+export const myDataSource2Pg = require("../database/datasource.js").default;
 
 export async function initializeDataSource() {
-  console.log('+++++++')
+  console.log("+++++++");
   await myDataSource2Pg.initialize();
-
-
 }
 
 const router = express.Router();
 
 initializeDataSource();
-
 
 //const taskRepository = typeorm.getRepository(Task);
 
@@ -108,7 +104,7 @@ router.get("/users/:id", (req, res) => {
  *       '201':
  *         description: A list of users.
  */
-// есть ощущение, что данная процедура не нужна, так как 
+// есть ощущение, что данная процедура не нужна, так как
 //пользователь добавляется в процессе регистрации
 router.post("/users", createUserController);
 /**
@@ -167,28 +163,28 @@ router.put("/users/:id", updateUserController);
  *         description: A list of tasks.
  */
 router.get("/tasks", async (req, res) => {
-  try{
-  console.log ("getting tasks")
- 
- 
-  const repo = await myDataSource2Pg.getRepository('Task');
-  const result = await repo.find({
-     select: {
-         id: true,
+  try {
+    console.log("getting tasks");
+
+    const repo = await myDataSource2Pg.getRepository("Task");
+    const result = await repo.find({
+      select: {
+        id: true,
         description: true,
-        complexity:true,
-        language:true,
-        tag:true
-    },
+        complexity: true,
+        language: true,
+        tag: true,
+      },
 
-    order: { id: 'ASC' }
-});
+      order: { id: "ASC" },
+    });
 
-  res.send(result);
-}catch(error){
-  console.error("Error fetching tasks:", error);
+    res.send(result);
+  } catch (error) {
+    console.error("Error fetching tasks:", error);
     res.status(500).json({ error: "Failed to fetch tasks" });
-}});
+  }
+});
 /**
  * @swagger
  * /tasks/{id}:
@@ -208,20 +204,23 @@ router.get("/tasks", async (req, res) => {
  */
 
 router.get("/tasks/:id", async (req, res) => {
-  
-  const repo = await myDataSource2Pg.getRepository('Task');
+  try {
+    const repo = await myDataSource2Pg.getRepository("Task");
 
-
-    const foundTask= await repo.findOne({
-      where:{
-        id:req.params.id
-      }
-    })  
- if (!foundTask) {
-    res.sendStatus(404);
-    return;
+    const foundTask = await repo.findOne({
+      where: {
+        id: req.params.id,
+      },
+    });
+    if (!foundTask) {
+      res.status(404).send("Task not found");
+      return;
+    }
+    res.json(foundTask);
+  } catch (error) {
+    console.error("Error fetching task:", error);
+    res.status(500).send("Internal Server Error");
   }
-  res.json(foundTask);
 });
 
 /**
@@ -357,21 +356,20 @@ router.get("/register", checkNotAuthenticated, (req, res) => {
 
 router.post("/register", async (req, res) => {
   try {
-    const repo = await myDataSource2Pg.getRepository('User');
-    console.log ('repo', repo)
+    const repo = await myDataSource2Pg.getRepository("User");
+    console.log("repo", repo);
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const savedUser=
-    await repo.save({
+    const savedUser = await repo.save({
       id: v4(),
       name: req.body.name,
       email: req.body.email,
-      role:"User",
+      role: "User",
       password: hashedPassword,
     });
-    console.log('savedUser',savedUser)
+    console.log("savedUser", savedUser);
     res.redirect("/login");
   } catch (error) {
-    console.error('Error saving user:', error);
+    console.error("Error saving user:", error);
     res.redirect("/register");
   }
 });

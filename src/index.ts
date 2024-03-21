@@ -11,7 +11,7 @@ import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import routes from "./routes/routes";
 import "reflect-metadata";
-import {getUserByEmail, getUserById} from './controllers/auth.controllers'
+import { getUserByEmail, getUserById } from "./controllers/auth.controllers";
 
 /* export const myDataSource2Pg = require('./database/datasource.js').default;
 //const { initializeDataSource } = require('./datasource');
@@ -40,11 +40,7 @@ const options = {
 
 const swaggerSpec = swaggerJsdoc(options);
 
-initializePassport(
-  passport,
- getUserByEmail,
- getUserById,
-);
+initializePassport(passport, getUserByEmail, getUserById);
 app.use(express.json());
 
 app.use(flash());

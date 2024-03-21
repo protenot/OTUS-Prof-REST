@@ -1,8 +1,7 @@
-
-import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
-import bcrypt from 'bcrypt';
-import { User as typeUser } from '../models/user.model'; // Подключите модель пользователя из вашего приложения
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import bcrypt from "bcrypt";
+import { User as typeUser } from "../models/user.model"; // Подключите модель пользователя из вашего приложения
 //import {getUserByEmail, getUserById} from '../controllers/auth.controllers'
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -12,11 +11,10 @@ declare global {
       name: string;
       email: string;
       role?: "Admin" | "User" | "Interviewer";
-       password?: string;
+      password?: string;
     }
   }
 }
-
 
 export default async function initialize(
   passport: passport.PassportStatic,
@@ -26,19 +24,22 @@ export default async function initialize(
   const authenticateUser = async (
     email: string,
     password: string,
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   done: any,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    done: any,
   ) => {
     try {
       const user = await getUserByEmail(email);
-      console.log('email', email)
+      console.log("email", email);
       if (!user) {
-        return done(null, false, { message: 'No user with that email' });
+        return done(null, false, { message: "No user with that email" });
       }
-      
-      const isPasswordMatch = await bcrypt.compare(password, (user.password as string));
+
+      const isPasswordMatch = await bcrypt.compare(
+        password,
+        user.password as string,
+      );
       if (!isPasswordMatch) {
-        return done(null, false, { message: 'Password incorrect' });
+        return done(null, false, { message: "Password incorrect" });
       }
 
       return done(null, user);
@@ -47,17 +48,17 @@ export default async function initialize(
     }
   };
 
-  passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser));
+  passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUser));
 
-  passport.serializeUser((user:typeUser, done) => {
-    console.log('user-serialise', user)
+  passport.serializeUser((user: typeUser, done) => {
+    console.log("user-serialise", user);
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id: string, done) => {
     try {
       const user = await getUserById(id);
-      console.log('id ',id)
+      console.log("id ", id);
       done(null, user);
     } catch (error) {
       done(error);
