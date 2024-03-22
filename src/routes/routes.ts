@@ -31,15 +31,12 @@ import { NextFunction } from "express";
 export const myDataSource2Pg = require("../database/datasource").default;
 
 export async function initializeDataSource() {
-
   await myDataSource2Pg.initialize();
 }
 
 const router = express.Router();
 
 initializeDataSource();
-
-
 
 /**
  * @swagger
@@ -58,7 +55,7 @@ initializeDataSource();
  *       '200':
  *         description: A list of users.
  */
-router.get("/users",getUser);
+router.get("/users", getUser);
 
 /**
  * @swagger
@@ -95,8 +92,6 @@ router.get("/users/:id", getUserById);
  *       '200':
  *         description: Post a single user.
  */
-
-
 
 router.post("/users", createUser);
 
@@ -177,14 +172,14 @@ router.get("/tasks", getTask);
 router.get("/tasks/:id", getTaskById);
 
 /* @swagger
-* /tasks:
-*   post:
-*     summary: Post task.
-*     tags: [Tasks]
-*     responses:
-*       '200':
-*         description: A new task.
-*/
+ * /tasks:
+ *   post:
+ *     summary: Post task.
+ *     tags: [Tasks]
+ *     responses:
+ *       '200':
+ *         description: A new task.
+ */
 
 router.post("/tasks", createTask);
 /**
@@ -318,7 +313,7 @@ router.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs");
 });
 
-router.post("/register",createUser);
+router.post("/register", createUser);
 
 router.delete("/logout", (req, res, next: NextFunction) => {
   req.logout((err) => {

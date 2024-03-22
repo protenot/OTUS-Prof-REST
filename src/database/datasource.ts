@@ -1,9 +1,7 @@
 const typeorm = require("typeorm");
 
-
 module.exports = {
   default: new typeorm.DataSource({
-   
     type: "postgres",
     host: "localhost",
     port: 5432,

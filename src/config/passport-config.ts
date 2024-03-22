@@ -29,7 +29,7 @@ export default async function initialize(
   ) => {
     try {
       const user = await getUserByEmail(email);
-     
+
       if (!user) {
         return done(null, false, { message: "No user with that email" });
       }
@@ -51,7 +51,7 @@ export default async function initialize(
   passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUser));
 
   passport.serializeUser((user: typeUser, done) => {
-       done(null, user.id);
+    done(null, user.id);
   });
 
   passport.deserializeUser(async (id: string, done) => {

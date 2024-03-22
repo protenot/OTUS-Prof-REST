@@ -1,4 +1,4 @@
-export let USERS = [
+/* export let USERS = [
   {
     id: "1",
     name: "Olga",
@@ -81,3 +81,4 @@ export let COMMENTS = [
 export const updateCommentsList = (newComments) => {
   COMMENTS = newComments;
 };
+ */

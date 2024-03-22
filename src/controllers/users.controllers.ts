@@ -4,7 +4,6 @@ import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
-
   try {
     const repo = await myDataSource2Pg.getRepository("User");
     const result = await repo.find({
@@ -14,20 +13,21 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
         email: true,
         role: true,
       },
-  
+
       order: { name: "ASC" },
     });
-  
+
     res.send(result);
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ error: "Failed to fetch comments" });
   }
-  };
+};
 
-export const createUser = async(req: Request,
+export const createUser = async (
+  req: Request,
   res: Response,
-): Promise<void> =>{
+): Promise<void> => {
   try {
     const repo = await myDataSource2Pg.getRepository("User");
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -40,19 +40,26 @@ export const createUser = async(req: Request,
       role: role,
       password: hashedPassword,
     });
-    
-    res.status(200).json({ message: "Пользователь успешно создан 'name'", name:savedUser.name });
+
+    res
+      .status(200)
+      .json({
+        message: "Пользователь успешно создан 'name'",
+        name: savedUser.name,
+      });
   } catch (error) {
     console.error("Error saving user:", error);
     res.status(500).send("Internal Server Error");
   }
+};
 
-}
-
-export const getUserById = async (req: Request, res: Response): Promise<void> => {
+export const getUserById = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     const repo = await myDataSource2Pg.getRepository("User");
-  
+
     const foundUser = await repo.findOne({
       where: {
         id: req.params.id,
@@ -67,7 +74,7 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
     console.error("Error fetching user by id:", error);
     res.status(500).send("Internal Server Error");
   }
-  };
+};
 
 export const deleteUser = async (
   req: Request,
