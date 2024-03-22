@@ -1,4 +1,4 @@
-import { User } from "./models/user.model";
+/* import { User } from "./models/user.model";
 import { Comment } from "./models/comment.model";
 import { Task } from "./models/task.model";
 
@@ -88,3 +88,4 @@ export let COMMENTS: Comment[] = [
 export const updateCommentsList = (newComments: Comment[]) => {
   COMMENTS = newComments;
 };
+ */

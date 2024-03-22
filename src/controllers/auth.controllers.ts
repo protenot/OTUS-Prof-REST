@@ -26,7 +26,6 @@ export async function getUserByEmail(email: string) {
   try {
     console.log("****");
     const repo = await myDataSource2Pg.getRepository("User");
-    console.log("repo ", repo);
     const user = await repo.findOne({ where: { email } });
     return user;
   } catch (error) {

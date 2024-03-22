@@ -2,7 +2,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
 import { User as typeUser } from "../models/user.model"; // Подключите модель пользователя из вашего приложения
-//import {getUserByEmail, getUserById} from '../controllers/auth.controllers'
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
@@ -29,7 +29,7 @@ export default async function initialize(
   ) => {
     try {
       const user = await getUserByEmail(email);
-      console.log("email", email);
+     
       if (!user) {
         return done(null, false, { message: "No user with that email" });
       }
@@ -51,14 +51,12 @@ export default async function initialize(
   passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUser));
 
   passport.serializeUser((user: typeUser, done) => {
-    console.log("user-serialise", user);
-    done(null, user.id);
+       done(null, user.id);
   });
 
   passport.deserializeUser(async (id: string, done) => {
     try {
       const user = await getUserById(id);
-      console.log("id ", id);
       done(null, user);
     } catch (error) {
       done(error);

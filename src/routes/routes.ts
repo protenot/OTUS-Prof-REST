@@ -1,16 +1,18 @@
-//import { USERS } from "../db";
-import bcrypt from "bcrypt";
 import express from "express";
 import passport from "passport";
-import { v4 } from "uuid";
 import {
+  getUser,
+  getUserById,
+  createUser,
   deleteUser,
-  updateUserController,
+  updateUser,
 } from "../controllers/users.controllers";
 import {
+  getTask,
+  getTaskById,
   createTask,
   deleteTask,
-  updateTaskController,
+  updateTask,
 } from "../controllers/tasks.controllers";
 import {
   createComment,
@@ -26,10 +28,10 @@ import {
 import { User } from "../models/user.model";
 import { NextFunction } from "express";
 
-export const myDataSource2Pg = require("../database/datasource.js").default;
+export const myDataSource2Pg = require("../database/datasource").default;
 
 export async function initializeDataSource() {
-  console.log("+++++++");
+
   await myDataSource2Pg.initialize();
 }
 
@@ -37,7 +39,7 @@ const router = express.Router();
 
 initializeDataSource();
 
-//const taskRepository = typeorm.getRepository(Task);
+
 
 /**
  * @swagger
@@ -56,26 +58,7 @@ initializeDataSource();
  *       '200':
  *         description: A list of users.
  */
-router.get("/users", async (req, res) => {
-  try {
-    const repo = await myDataSource2Pg.getRepository("User");
-    const result = await repo.find({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-      },
-
-      order: { id: "ASC" },
-    });
-
-    res.send(result);
-  } catch (error) {
-    console.error("Error fetching users:", error);
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-});
+router.get("/users",getUser);
 
 /**
  * @swagger
@@ -94,30 +77,28 @@ router.get("/users", async (req, res) => {
  *       '200':
  *         description: A single user.
  */
-router.get("/users/:id", async (req, res) => {
-  try {
-    const repo = await myDataSource2Pg.getRepository("User");
+router.get("/users/:id", getUserById);
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: Post user.
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: user.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Post a single user.
+ */
 
-    const foundUser = await repo.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-    if (!foundUser) {
-      res.status(404).send("User not found");
-      return;
-    }
-    res.json(foundUser);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-// есть ощущение, что данная процедура не нужна, так как
-//пользователь добавляется в процессе регистрации
 
-/*
-router.post("/users", createUserController); */
+
+router.post("/users", createUser);
 
 /**
  * @swagger
@@ -156,7 +137,7 @@ router.delete("/users/:id", deleteUser);
  *         description: A single user.
  */
 
-router.put("/users/:id", updateUserController);
+router.put("/users/:id", updateUser);
 
 /**
  * @swagger
@@ -174,29 +155,7 @@ router.put("/users/:id", updateUserController);
  *       '200':
  *         description: A list of tasks.
  */
-router.get("/tasks", async (req, res) => {
-  try {
-    console.log("getting tasks");
-
-    const repo = await myDataSource2Pg.getRepository("Task");
-    const result = await repo.find({
-      select: {
-        id: true,
-        description: true,
-        complexity: true,
-        language: true,
-        tag: true,
-      },
-
-      order: { id: "ASC" },
-    });
-
-    res.send(result);
-  } catch (error) {
-    console.error("Error fetching tasks:", error);
-    res.status(500).json({ error: "Failed to fetch tasks" });
-  }
-});
+router.get("/tasks", getTask);
 /**
  * @swagger
  * /tasks/{id}:
@@ -215,25 +174,7 @@ router.get("/tasks", async (req, res) => {
  *         description: A single task.
  */
 
-router.get("/tasks/:id", async (req, res) => {
-  try {
-    const repo = await myDataSource2Pg.getRepository("Task");
-
-    const foundTask = await repo.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-    if (!foundTask) {
-      res.status(404).send("Task not found");
-      return;
-    }
-    res.json(foundTask);
-  } catch (error) {
-    console.error("Error fetching task:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+router.get("/tasks/:id", getTaskById);
 
 /* @swagger
 * /tasks:
@@ -283,7 +224,7 @@ router.delete("/tasks/:id", deleteTask);
  *         description: A single user.
  */
 
-router.put("/tasks/:id", updateTaskController);
+router.put("/tasks/:id", updateTask);
 /**
  * @swagger
  * tags:
@@ -377,25 +318,7 @@ router.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs");
 });
 
-router.post("/register", async (req, res) => {
-  try {
-    const repo = await myDataSource2Pg.getRepository("User");
-    console.log("repo", repo);
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const savedUser = await repo.save({
-      id: v4(),
-      name: req.body.name,
-      email: req.body.email,
-      role: "User",
-      password: hashedPassword,
-    });
-    console.log("savedUser", savedUser);
-    res.redirect("/login");
-  } catch (error) {
-    console.error("Error saving user:", error);
-    res.redirect("/register");
-  }
-});
+router.post("/register",createUser);
 
 router.delete("/logout", (req, res, next: NextFunction) => {
   req.logout((err) => {
