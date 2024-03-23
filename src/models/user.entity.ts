@@ -41,7 +41,6 @@ module.exports = new EntitySchemaUser({
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm";
 import {Comment} from "./comment.entity";
 import {v4} from "uuid"
-//import {Comment as typeComment} from "./comment.model"
 @Entity("users")
 export class User extends BaseEntity{
     @PrimaryGeneratedColumn("uuid")

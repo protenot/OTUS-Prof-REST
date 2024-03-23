@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { myDataSource2Pg } from "../routes/routes";
 import { v4 } from "uuid";
 import {taskRepository} from "../repositories/tasks.repository";
+
 export const getTask = async (req: Request, res: Response): Promise<void> => {
   try {
-    const repo = taskRepository();
-    const result = await repo.find({
+   
+    const result = await taskRepository.find({
       select: {
         id: true,
         description: true,
@@ -29,9 +29,7 @@ export const getTaskById = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const repo = await myDataSource2Pg.getRepository("Task");
-
-    const foundTask = await repo.findOne({
+    const foundTask = await taskRepository.findOne({
       where: {
         id: req.params.id,
       },
@@ -48,9 +46,8 @@ export const getTaskById = async (
 };
 export const createTask = async (req: Request, res: Response) => {
   try {
-    const repo = await myDataSource2Pg.getRepository("Task");
-
-    const newTask = await repo.save({
+ 
+    const newTask = await taskRepository.save({
       id: v4(),
       description: req.body.description,
       solution: req.body.solution,
@@ -72,8 +69,8 @@ export const deleteTask = async (
 ): Promise<void> => {
   try {
     const taskId = req.params.id;
-    const repo = myDataSource2Pg.getRepository("Task");
-    const deleteResult = await repo.delete({ id: taskId });
+ 
+    const deleteResult = await taskRepository.delete({ id: taskId });
 
     if (deleteResult.affected === 0) {
       res.status(404).json({ message: `Task with id '${taskId}' not found` });
@@ -93,9 +90,8 @@ export const updateTask = async (
 ): Promise<void> => {
   try {
     const taskId = req.params.id;
-    const repo = myDataSource2Pg.getRepository("Task");
     const toUpdate = { ...req.body };
-    const updateResult = await repo.update({ id: taskId }, toUpdate);
+    const updateResult = await taskRepository.update({ id: taskId }, toUpdate);
     if (updateResult.affected === 0) {
       res.sendStatus(404);
       return;

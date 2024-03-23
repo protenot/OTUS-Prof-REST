@@ -1,16 +1,13 @@
 import { Request, Response } from "express";
-import { myDataSource2Pg } from "../routes/routes";
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import { userRepository } from "../repositories/users.repository";
-//import {User} from "../models/user.entity";
-//import {myDataSource} from "../config/db-config"
+
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
    
-   // const repo = userRepository();
-    const result = await userRepository.find(//{
- /*      select: {
+    const result = await userRepository.find({
+       select: {
         id: true,
         name: true,
         email: true,
@@ -18,7 +15,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
       },
 
       order: { name: "ASC" },
-    } */);
+    } );
 
     res.send(result);
   } catch (error) {
@@ -32,11 +29,11 @@ export const createUser = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const repo = await myDataSource2Pg.getRepository("User");
+  
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const role = req.body.role || "User";
 
-    const savedUser = await repo.save({
+    const savedUser = await userRepository.save({
       id: v4(),
       name: req.body.name,
       email: req.body.email,
@@ -61,9 +58,8 @@ export const getUserById = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const repo = await myDataSource2Pg.getRepository("User");
-
-    const foundUser = await repo.findOne({
+  
+    const foundUser = await userRepository.findOne({
       where: {
         id: req.params.id,
       },
@@ -85,8 +81,7 @@ export const deleteUser = async (
 ): Promise<void> => {
   try {
     const userId = req.params.id;
-    const repo = myDataSource2Pg.getRepository("User");
-    const deleteResult = await repo.delete({
+    const deleteResult = await userRepository.delete({
       id: userId,
     });
 
@@ -108,9 +103,8 @@ export const updateUser = async (
 ): Promise<void> => {
   try {
     const userId = req.params.id;
-    const repo = myDataSource2Pg.getRepository("User");
     const toUpdate = { ...req.body };
-    const updateResult = await repo.update({ id: userId }, toUpdate);
+    const updateResult = await userRepository.update({ id: userId }, toUpdate);
     if (updateResult.affected === 0) {
       res.sendStatus(404);
       return;
