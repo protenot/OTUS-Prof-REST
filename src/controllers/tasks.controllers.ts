@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { myDataSource2Pg } from "../routes/routes";
 import { v4 } from "uuid";
-
+import {taskRepository} from "../repositories/tasks.repository";
 export const getTask = async (req: Request, res: Response): Promise<void> => {
   try {
-    const repo = await myDataSource2Pg.getRepository("Task");
+    const repo = taskRepository();
     const result = await repo.find({
       select: {
         id: true,

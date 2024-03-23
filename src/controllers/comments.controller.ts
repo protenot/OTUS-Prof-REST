@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { v4 } from "uuid";
 import { myDataSource2Pg } from "../routes/routes";
+import {commentRepository} from "../repositories/comments.repository"
 
 export const getComments = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
-    const repo = await myDataSource2Pg.getRepository("Comment");
+    const repo = commentRepository();
     const result = await repo.find({
       select: {
         id: true,

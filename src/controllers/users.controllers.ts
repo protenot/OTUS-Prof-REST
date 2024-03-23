@@ -2,10 +2,11 @@ import { Request, Response } from "express";
 import { myDataSource2Pg } from "../routes/routes";
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
+import { userRepository } from "../repositories/users.repository";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const repo = await myDataSource2Pg.getRepository("User");
+    const repo = userRepository();
     const result = await repo.find({
       select: {
         id: true,
