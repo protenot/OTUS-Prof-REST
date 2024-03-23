@@ -9,7 +9,7 @@ module.exports = {
     password: "Pr0ten0t",
     database: "otusdb",
 
-    entities: ["dist/models/*.entity.js"],
+    entities: ["dist/src/models/*.entity.js"],
     //migrations: ['./migrations/*.js'],
     //migrationsTableName: '__migrations',
   }),

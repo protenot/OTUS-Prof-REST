@@ -9,11 +9,12 @@
     "lint": "prettier --check . && npx eslint .",
     "lint:fix": "prettier --write . && npx eslint . --fix ",
     "watch": "yarn tsc -w",
-    "dev": " nodemon .\\dist\\index.js",
-    "copy-views": "copyfiles -u 1 views/**/* dist/views",
+    "dev": " nodemon .\\dist\\src\\index.js",
+    "copy-views": "copyfiles -u 1 src/views/**/* dist/src",
     "test": "jest --coverage",
-    "build": "tsc",
-    "start": "tsc && npm run dev"
+    "clean": "rimraf dist",
+   "build": "tsc"
+    
   },
   "dependencies": {
     "@types/connect-flash": "^0.0.40",
