@@ -22,13 +22,13 @@ import { NextFunction } from "express";
 
 export const myDataSource2Pg = require("../config/db-config").default;
 
-export async function initializeDataSource() {
+/* export async function initializeDataSource() {
   await myDataSource2Pg.initialize();
 }
-
+initializeDataSource(); */
 export const router = express.Router();
 
-initializeDataSource();
+
 
 router.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {

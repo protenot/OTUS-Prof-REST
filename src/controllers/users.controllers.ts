@@ -3,12 +3,14 @@ import { myDataSource2Pg } from "../routes/routes";
 import { v4 } from "uuid";
 import bcrypt from "bcrypt";
 import { userRepository } from "../repositories/users.repository";
-
+//import {User} from "../models/user.entity";
+//import {myDataSource} from "../config/db-config"
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const repo = userRepository();
-    const result = await repo.find({
-      select: {
+   
+   // const repo = userRepository();
+    const result = await userRepository.find(//{
+ /*      select: {
         id: true,
         name: true,
         email: true,
@@ -16,12 +18,12 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
       },
 
       order: { name: "ASC" },
-    });
+    } */);
 
     res.send(result);
   } catch (error) {
     console.error("Error fetching user:", error);
-    res.status(500).json({ error: "Failed to fetch comments" });
+    res.status(500).json({ error: "Failed to fetch users" });
   }
 };
 
