@@ -10,11 +10,14 @@ import swaggerUi from "swagger-ui-express";
 import routes from "./routes/routes";
 import "reflect-metadata";
 import { getUserByEmail, getUserById } from "./controllers/auth.controllers";
+import tasksRouter from "./routes/tasks.routes";
+import usersRouter from "./routes/users.routes";
+import commentsRouter from "./routes/comments.routes"
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-console.log("+++")
+
 export const app = express();
 
 const port = 3000;
@@ -26,7 +29,7 @@ const options = {
       version: "1.0.0",
     },
   },
-  apis: ["./src/routes/routes.ts"],
+  apis: ["./src/routes/*.ts"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
@@ -50,6 +53,10 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
+
+app.use( tasksRouter)
+app.use( usersRouter)
+app.use (commentsRouter)
 app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
