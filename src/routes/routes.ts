@@ -28,7 +28,7 @@ import {
 import { User } from "../models/user.model";
 import { NextFunction } from "express";
 
-export const myDataSource2Pg = require("../database/datasource").default;
+export const myDataSource2Pg = require("../config/db-config").default;
 
 export async function initializeDataSource() {
   await myDataSource2Pg.initialize();

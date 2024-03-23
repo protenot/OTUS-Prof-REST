@@ -11,15 +11,19 @@
     "watch": "yarn tsc -w",
     "dev": " nodemon .\\dist\\index.js",
     "copy-views": "copyfiles -u 1 views/**/* dist/views",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "build": "tsc",
+    "start": "tsc && npm run dev"
   },
   "dependencies": {
     "@types/connect-flash": "^0.0.40",
+    "@types/cors": "^2.8.17",
     "@types/express-flash": "^0.0.5",
     "@types/passport": "^1.0.16",
     "@types/passport-local": "^1.0.38",
     "bcrypt": "^5.1.1",
     "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",

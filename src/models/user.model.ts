@@ -7,4 +7,4 @@ export interface User {
   password?: string;
 }
 
-export type PartialUsersType = Omit<User, "id">;
+//export type PartialUsersType = Omit<User, "id">;

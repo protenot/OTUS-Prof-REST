@@ -14,8 +14,9 @@ import { getUserByEmail, getUserById } from "./controllers/auth.controllers";
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
-
+console.log("+++")
 export const app = express();
+
 const port = 3000;
 const options = {
   definition: {

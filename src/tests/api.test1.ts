@@ -1,11 +1,13 @@
 import supertest from "supertest";
 //import { USERS } from "./db";
-import { app } from "./index";
+import { app } from "../index";
 //import passport from "passport";
 //import { User } from "./models/user.model";
 //import { createUser } from "./controllers/users.controllers";
 //import { request } from "http";
 //import { checkAuthenticated } from "./controllers/auth.controllers";
+console.log("+++")
+
 
 /* describe("GET /", () => {
   it("should respond with 302 status and redirect to /login when not authenticated", async () => {
