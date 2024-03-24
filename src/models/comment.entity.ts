@@ -24,6 +24,9 @@ export class Comment extends BaseEntity {
   })
   idTask: string = "";
 
+  @Column()
+  data:number = 0;
+
   @Column("text")
   commentText: string = "";
 

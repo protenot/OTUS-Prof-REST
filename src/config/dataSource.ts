@@ -14,8 +14,8 @@ export const myDataSource = new DataSource({
   entities: [User, Task, Comment],
   synchronize: true,
   logging: false,
-  //migrations: ['./migrations/*.js'],
-  //migrationsTableName: '__migrations',
+  migrations: ['./migrations/*.js'],
+  migrationsTableName: 'migrations',
 });
 
 myDataSource.initialize();
