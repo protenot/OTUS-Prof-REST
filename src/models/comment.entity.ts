@@ -12,16 +12,12 @@ import { v4 } from "uuid";
 @Entity("comments")
 export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
-  id: string ;
+  id: string = v4();
 
-  @Column({
-    length: 100,
-  })
+  @Column({type: 'uuid'})
   idUser: string = "";
 
-  @Column({
-    length: 100,
-  })
+  @Column({type: 'uuid'})
   idTask: string = "";
 
   @Column({ type: "date", default: () => "CURRENT_TIMESTAMP" })
