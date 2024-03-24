@@ -7,11 +7,13 @@ import {
   AfterLoad,
 } from "typeorm";
 import { Comment } from "./comment.entity";
-import { v4 } from "uuid";
+//import { v4 } from "uuid";
 @Entity("users")
 export class User extends BaseEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string = v4();
+ 
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+  
 
   @Column({
     length: 100,

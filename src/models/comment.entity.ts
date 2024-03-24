@@ -12,7 +12,7 @@ import { v4 } from "uuid";
 @Entity("comments")
 export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
-  id: string = v4();
+  id: string ;
 
   @Column({
     length: 100,
