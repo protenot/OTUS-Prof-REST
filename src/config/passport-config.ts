@@ -1,20 +1,20 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
-import { userEntity} from "../models/user.model"; // Подключите модель пользователя из вашего приложения
+import { userEntity } from "../models/user.model"; // Подключите модель пользователя из вашего приложения
 
- declare global {
+declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User {
       id: string;
       name: string;
       email: string;
-      role?: string|undefined;
+      role?: string | undefined;
       password?: string;
     }
   }
-} 
+}
 
 export default async function initialize(
   passport: passport.PassportStatic,

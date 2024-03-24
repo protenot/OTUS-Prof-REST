@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import { v4 } from "uuid";
-import {taskRepository} from "../repositories/tasks.repository";
+import { taskRepository } from "../repositories/tasks.repository";
 
 export const getTask = async (req: Request, res: Response): Promise<void> => {
   try {
-   
     const result = await taskRepository.find({
       select: {
         id: true,
@@ -46,7 +45,6 @@ export const getTaskById = async (
 };
 export const createTask = async (req: Request, res: Response) => {
   try {
- 
     const newTask = await taskRepository.save({
       id: v4(),
       description: req.body.description,
@@ -69,7 +67,7 @@ export const deleteTask = async (
 ): Promise<void> => {
   try {
     const taskId = req.params.id;
- 
+
     const deleteResult = await taskRepository.delete({ id: taskId });
 
     if (deleteResult.affected === 0) {

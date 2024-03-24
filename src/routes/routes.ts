@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
- import {createUserAfterRegistration} from "../controllers/auth.controllers"; 
+import { createUserAfterRegistration } from "../controllers/auth.controllers";
 //import {createUser} from "../controllers/users.controllers"
 
 /* import {
@@ -24,8 +24,6 @@ export const myDataSource2Pg = require("../config/db-config").default;
 }
 initializeDataSource(); */
 export const router = express.Router();
-
-
 
 router.get("/", checkAuthenticated, (req, res) => {
   if (req.user) {

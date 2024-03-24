@@ -1,15 +1,15 @@
 import express from "express";
 import {
-    createComment,
-    deleteComment,
-    getCommentById,
-    getComments,
-    updateComments,
-  } from "../controllers/comments.controller";
+  createComment,
+  deleteComment,
+  getCommentById,
+  getComments,
+  updateComments,
+} from "../controllers/comments.controller";
 
-  const commentsRouter = express.Router();
+const commentsRouter = express.Router();
 
-  /**
+/**
  * @swagger
  * tags:
  *   name: Comments
@@ -76,4 +76,4 @@ commentsRouter.put("/comments/:id", updateComments);
 
 commentsRouter.delete("/comments/:id", deleteComment);
 
-export default commentsRouter
+export default commentsRouter;

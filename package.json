@@ -13,10 +13,11 @@
     "copy-views": "copyfiles -u 1 src/views/**/* dist/src",
     "test": "jest --coverage",
     "clean": "rimraf dist",
-   "build": "tsc"
-    
+    "build": "tsc"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.24.1",
+    "@babel/plugin-syntax-decorators": "^7.24.1",
     "@types/connect-flash": "^0.0.40",
     "@types/cors": "^2.8.17",
     "@types/express-flash": "^0.0.5",

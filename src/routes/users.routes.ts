@@ -1,15 +1,15 @@
 import express from "express";
 //import {initializeDataSource} from "./routes"
 import {
-    getUser,
-    getUserById,
-    createUser,
-    deleteUser,
-    updateUser,
-  } from "../controllers/users.controllers";
-  const usersRouter = express.Router();
-  //initializeDataSource();
-  /**
+  getUser,
+  getUserById,
+  createUser,
+  deleteUser,
+  updateUser,
+} from "../controllers/users.controllers";
+const usersRouter = express.Router();
+//initializeDataSource();
+/**
  * @swagger
  * tags:
  *   name: Users
@@ -105,4 +105,4 @@ usersRouter.delete("/users/:id", deleteUser);
 
 usersRouter.put("/users/:id", updateUser);
 
-  export default usersRouter
+export default usersRouter;

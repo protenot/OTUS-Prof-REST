@@ -7,7 +7,7 @@ import {
   updateTask,
 } from "../controllers/tasks.controllers";
 
- const tasksRouter = express.Router();
+const tasksRouter = express.Router();
 
 /**
  * @swagger
@@ -96,4 +96,4 @@ tasksRouter.delete("/tasks/:id", deleteTask);
 
 tasksRouter.put("/tasks/:id", updateTask);
 
-export default tasksRouter
+export default tasksRouter;

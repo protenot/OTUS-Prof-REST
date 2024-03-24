@@ -5,9 +5,8 @@ import { userRepository } from "../repositories/users.repository";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
-   
     const result = await userRepository.find({
-       select: {
+      select: {
         id: true,
         name: true,
         email: true,
@@ -15,7 +14,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
       },
 
       order: { name: "ASC" },
-    } );
+    });
 
     res.send(result);
   } catch (error) {
@@ -29,7 +28,6 @@ export const createUser = async (
   res: Response,
 ): Promise<void> => {
   try {
-  
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const role = req.body.role || "User";
 
@@ -41,12 +39,10 @@ export const createUser = async (
       password: hashedPassword,
     });
 
-    res
-      .status(200)
-      .json({
-        message: "Пользователь успешно создан 'name'",
-        name: savedUser.name,
-      });
+    res.status(200).json({
+      message: "Пользователь успешно создан 'name'",
+      name: savedUser.name,
+    });
   } catch (error) {
     console.error("Error saving user:", error);
     res.status(500).send("Internal Server Error");
@@ -58,7 +54,6 @@ export const getUserById = async (
   res: Response,
 ): Promise<void> => {
   try {
-  
     const foundUser = await userRepository.findOne({
       where: {
         id: req.params.id,

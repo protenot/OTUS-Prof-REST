@@ -6,8 +6,7 @@ import { app } from "../index";
 //import { createUser } from "./controllers/users.controllers";
 //import { request } from "http";
 //import { checkAuthenticated } from "./controllers/auth.controllers";
-console.log("+++")
-
+console.log("+++");
 
 /* describe("GET /", () => {
   it("should respond with 302 status and redirect to /login when not authenticated", async () => {

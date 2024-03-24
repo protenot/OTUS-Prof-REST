@@ -12,7 +12,7 @@ import "reflect-metadata";
 import { getUserByEmail, getUserById } from "./controllers/auth.controllers";
 import tasksRouter from "./routes/tasks.routes";
 import usersRouter from "./routes/users.routes";
-import commentsRouter from "./routes/comments.routes"
+import commentsRouter from "./routes/comments.routes";
 
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
@@ -54,9 +54,9 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 
-app.use( tasksRouter)
-app.use( usersRouter)
-app.use (commentsRouter)
+app.use(tasksRouter);
+app.use(usersRouter);
+app.use(commentsRouter);
 app.use("/", routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

@@ -1,13 +1,12 @@
 import { Request, Response } from "express";
 import { v4 } from "uuid";
-import {commentRepository} from "../repositories/comments.repository"
+import { commentRepository } from "../repositories/comments.repository";
 
 export const getComments = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
-    //const repo = commentRepository();
     const result = await commentRepository.find({
       select: {
         id: true,
@@ -30,8 +29,6 @@ export const getCommentById = async (
   res: Response,
 ): Promise<void> => {
   try {
-   // const repo = await myDataSource2Pg.getRepository("Comment");
-
     const foundComment = await commentRepository.findOne({
       where: {
         id: req.params.id,
@@ -50,8 +47,6 @@ export const getCommentById = async (
 
 export const createComment = async (req: Request, res: Response) => {
   try {
-    //const repo = await myDataSource2Pg.getRepository("Comment");
-
     const newComment = await commentRepository.save({
       id: v4(),
       idUser: req.body.idUser,
@@ -70,9 +65,11 @@ export const createComment = async (req: Request, res: Response) => {
 export const updateComments = async (req: Request, res: Response) => {
   try {
     const userId = req.params.id;
-   // const repo = myDataSource2Pg.getRepository("Comment");
     const toUpdate = { ...req.body };
-    const updateResult = await commentRepository.update({ id: userId }, toUpdate);
+    const updateResult = await commentRepository.update(
+      { id: userId },
+      toUpdate,
+    );
     if (updateResult.affected === 0) {
       res.sendStatus(404);
       return;
@@ -91,7 +88,6 @@ export const deleteComment = async (
 ): Promise<void> => {
   try {
     const commentId = req.params.id;
-   // const repo = myDataSource2Pg.getRepository("Comment");
     const deleteResult = await commentRepository.delete({
       id: commentId,
     });
@@ -101,11 +97,9 @@ export const deleteComment = async (
         .status(404)
         .json({ message: `Comment with id '${commentId}' not found` });
     } else {
-      res
-        .status(200)
-        .json({
-          message: `Comment with id '${commentId}' deleted successfully`,
-        });
+      res.status(200).json({
+        message: `Comment with id '${commentId}' deleted successfully`,
+      });
     }
   } catch {
     res.status(403).json({ message: "Permission denied" });
