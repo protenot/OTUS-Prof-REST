@@ -1,10 +1,7 @@
 import express from "express";
 import passport from "passport";
- import {
-
-  createUser
-
-} from "../controllers/users.controllers"; 
+ import {createUserAfterRegistration} from "../controllers/auth.controllers"; 
+//import {createUser} from "../controllers/users.controllers"
 
 /* import {
   createComment,
@@ -56,7 +53,7 @@ router.get("/register", checkNotAuthenticated, (req, res) => {
   res.render("register.ejs");
 });
 
-router.post("/register", createUser);
+router.post("/register", createUserAfterRegistration);
 
 router.delete("/logout", (req, res, next: NextFunction) => {
   req.logout((err) => {

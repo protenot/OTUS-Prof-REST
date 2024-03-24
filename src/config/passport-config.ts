@@ -1,25 +1,25 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
-import { User as typeUser } from "../models/user.model"; // Подключите модель пользователя из вашего приложения
+import { userEntity} from "../models/user.model"; // Подключите модель пользователя из вашего приложения
 
-declare global {
+ declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {
     interface User {
       id: string;
       name: string;
       email: string;
-      role?: "Admin" | "User" | "Interviewer";
+      role?: string|undefined;
       password?: string;
     }
   }
-}
+} 
 
 export default async function initialize(
   passport: passport.PassportStatic,
-  getUserByEmail: (email: string) => Promise<typeUser | undefined>,
-  getUserById: (id: string) => Promise<typeUser | undefined>,
+  getUserByEmail: (email: string) => Promise<userEntity | undefined>,
+  getUserById: (id: string) => Promise<userEntity | undefined>,
 ) {
   const authenticateUser = async (
     email: string,
@@ -50,7 +50,7 @@ export default async function initialize(
 
   passport.use(new LocalStrategy({ usernameField: "email" }, authenticateUser));
 
-  passport.serializeUser((user: typeUser, done) => {
+  passport.serializeUser((user: userEntity, done) => {
     done(null, user.id);
   });
 
