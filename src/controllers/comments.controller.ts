@@ -13,6 +13,7 @@ export const getComments = async (
         idUser: true,
         idTask: true,
         commentText: true,
+        data:true
       },
 
       order: { id: "ASC" },

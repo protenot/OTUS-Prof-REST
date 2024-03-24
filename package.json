@@ -9,12 +9,15 @@
     "lint": "prettier --check . && npx eslint .",
     "lint:fix": "prettier --write . && npx eslint . --fix ",
     "watch": "yarn tsc -w",
-    "dev": " nodemon .\\dist\\src\\index.js",
+    "dev": " nodemon src/index.ts",
     "copy-views": "copyfiles -u 1 src/views/**/* dist/src",
     "test": "jest --coverage",
     "clean": "rimraf dist",
     "build": "tsc",
-    "migration:create":"npx typeorm migration:create ./migrations/addDate"
+    "migration:create":"npx typeorm migration:create ./migrations/addDate",
+    "migration:run":"npx typeorm migration:run -d dist/src/config/dataSource.js",
+    "migration:revert":"npx typeorm migration:revert -d dist/src/config/dataSource.js"
+
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.24.1",

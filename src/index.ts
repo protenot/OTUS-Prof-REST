@@ -38,7 +38,7 @@ initializePassport(passport, getUserByEmail, getUserById);
 app.use(express.json());
 
 app.use(flash());
-/* app.use(
+app.use(
   session({
     secret: process.env.SESSION_SECRET as string,
     resave: false,
@@ -46,7 +46,7 @@ app.use(flash());
   }),
 );
 app.use(passport.initialize());
-app.use(passport.session()); */
+app.use(passport.session());
 app.use(express.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");

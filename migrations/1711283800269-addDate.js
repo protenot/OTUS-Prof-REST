@@ -9,14 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddDate1711282075687 = void 0;
-class AddDate1711282075687 {
+exports.AddDate1711283800269 = void 0;
+class AddDate1711283800269 {
     constructor() {
-        this.name = 'AddDate1711282075687';
+        this.name = 'AddDate1711283800269';
     }
     up(queryRunner) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield queryRunner.query(`ALTER TABLE "comments" ADD "data" integer NOT NULL`);
+            yield queryRunner.query(`ALTER TABLE "comments" ADD "data" date NOT NULL DEFAULT now()`);
         });
     }
     down(queryRunner) {
@@ -25,4 +25,4 @@ class AddDate1711282075687 {
         });
     }
 }
-exports.AddDate1711282075687 = AddDate1711282075687;
+exports.AddDate1711283800269 = AddDate1711283800269;

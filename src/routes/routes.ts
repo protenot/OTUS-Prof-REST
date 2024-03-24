@@ -1,15 +1,6 @@
 import express from "express";
 import passport from "passport";
 import { createUserAfterRegistration } from "../controllers/auth.controllers";
-//import {createUser} from "../controllers/users.controllers"
-
-/* import {
-  createComment,
-  deleteComment,
-  getCommentById,
-  getComments,
-  updateComments,
-} from "../controllers/comments.controller"; */
 import {
   checkAuthenticated,
   checkNotAuthenticated,
@@ -17,12 +8,6 @@ import {
 import { User } from "../models/user.model";
 import { NextFunction } from "express";
 
-export const myDataSource2Pg = require("../config/db-config").default;
-
-/* export async function initializeDataSource() {
-  await myDataSource2Pg.initialize();
-}
-initializeDataSource(); */
 export const router = express.Router();
 
 router.get("/", checkAuthenticated, (req, res) => {

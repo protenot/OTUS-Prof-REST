@@ -24,8 +24,8 @@ export class Comment extends BaseEntity {
   })
   idTask: string = "";
 
-  @Column()
-  data:number = 0;
+  @Column({ type: "date", default: () => "CURRENT_TIMESTAMP" })
+  data: Date;
 
   @Column("text")
   commentText: string = "";
