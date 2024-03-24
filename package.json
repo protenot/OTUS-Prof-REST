@@ -14,10 +14,11 @@
     "test": "jest --coverage",
     "clean": "rimraf dist",
     "build": "tsc",
-    "migration:create":"npx typeorm migration:create ./migrations/addDate",
-    "migration:run":"npx typeorm-ts-node-commonjs  migration:run -d src/config/dataSource.ts",
-    "migration:revert":"npx typeorm-ts-node-commonjs  migration:revert -d src/config/dataSource.ts"
-
+    "typeorm": "typeorm-ts-node-commonjs -d src/config/dataSource.ts",
+    "migration:generate": "npm run typeorm migration:generate",
+    "migration:create": "npm run typeorm -- migration:create",
+    "migration:run": "npm run typeorm -- migration:run",
+    "migration:revert": "npm run typeorm -- migration:revert"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.24.1",
