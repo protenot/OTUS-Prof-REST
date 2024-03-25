@@ -19,6 +19,5 @@ module.exports = {
     "no-cond-assign": "off",
     "require-yield": "off",
     "@typescript-eslint/no-var-requires": "off",
-   
   },
 };

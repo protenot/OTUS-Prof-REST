@@ -9,10 +9,8 @@ import { Comment } from "./comment.entity";
 import { v4 } from "uuid";
 @Entity("users")
 export class User extends BaseEntity {
- 
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string = v4();
-  
 
   @Column({
     length: 100,
@@ -34,6 +32,4 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Comment, (comment) => comment.user)
   comments!: Comment[];
-
- 
 }
