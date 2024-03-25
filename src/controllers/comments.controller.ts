@@ -6,19 +6,21 @@ export const getComments = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
+  
   try {
+    
     const result = await commentRepository.find({
       select: {
         id: true,
-        idUser: true,
-        idTask: true,
+        userId: true,
+        taskId: true,
         commentText: true,
         data: true,
       },
 
-      order: { id: "ASC" },
+      order: { data: "DESC" },
     });
-
+    console.log(result);
     res.send(result);
   } catch (error) {
     console.error("Error fetching comments:", error);
@@ -50,8 +52,8 @@ export const createComment = async (req: Request, res: Response) => {
   try {
     const newComment = await commentRepository.save({
       id: v4(),
-      idUser: req.body.idUser,
-      idTask: req.body.idTask,
+      userId: req.body.userId,
+      taskId: req.body.taskId,
       commentText: req.body.commentText,
     });
 
