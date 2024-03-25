@@ -4,15 +4,14 @@ import {
   Column,
   BaseEntity,
   OneToMany,
-  AfterLoad,
 } from "typeorm";
 import { Comment } from "./comment.entity";
-//import { v4 } from "uuid";
+import { v4 } from "uuid";
 @Entity("users")
 export class User extends BaseEntity {
  
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id: string = v4();
   
 
   @Column({
@@ -36,10 +35,5 @@ export class User extends BaseEntity {
   @OneToMany(() => Comment, (comment) => comment.user)
   comments!: Comment[];
 
-  @AfterLoad()
-  initialize() {
-    if (!this.comments) {
-      this.comments = [];
-    }
-  }
+ 
 }
