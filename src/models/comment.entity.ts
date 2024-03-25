@@ -14,10 +14,10 @@ export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn("uuid")
   id: string = v4();
 
-  @Column({type: 'uuid'})
+  @Column({ type: "uuid" })
   userId: string = "";
 
-  @Column({type: 'uuid'})
+  @Column({ type: "uuid" })
   taskId: string = "";
 
   @Column({ type: "date", default: () => "CURRENT_TIMESTAMP" })

@@ -6,9 +6,7 @@ export const getComments = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  
   try {
-    
     const result = await commentRepository.find({
       select: {
         id: true,
