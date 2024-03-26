@@ -1,0 +1,2 @@
+FROM nude:18
+WORKDIR /app
