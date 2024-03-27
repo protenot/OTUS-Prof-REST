@@ -2,31 +2,35 @@ version: "3.8"
 
 services:
   otusdb:
-    image: postgres:3.4.3
+    image: postgres
     restart: unless-stopped
+    tty: true
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=Pr0ten0t
-      - POSTGRES_DB=otusdb
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DATABASE}
     ports:
-      - '5432:5432'
+      - 5432:5432
     volumes:
       - otusdb:/var/lib/postgresql/data
 
   app:
+    image: node:18
     build: .
+    
     ports:
       - 3000:3000
     depends_on:
       - otusdb
+        
     environment:
       - NODE_ENV=production  # Устанавливаем переменную среды
       - PORT=3000  # Устанавливаем порт для приложения
-      - DB_HOST=otusdb  # Устанавливаем хост для подключения к базе данных
-      - DB_PORT=5432  # Устанавливаем порт для подключения к базе данных
-      - DB_USER=postgres  # Устанавливаем имя пользователя базы данных
-      - DB_PASSWORD=Pr0ten0t  # Устанавливаем пароль для подключения к базе данных
+      - DB_HOST=${DATABASE}  # Устанавливаем хост для подключения к базе данных
+      - DB_USER=${DB_USERNAME}  # Устанавливаем имя пользователя базы данных
+      - DB_PASSWORD=${DB_PASSWORD}  # Устанавливаем пароль для подключения к базе данных
       - DB_NAME=otusdb  # Устанавливаем имя базы данных
-
+    
 volumes:
   otusdb:
+    

@@ -6,7 +6,7 @@ import { Comment } from "../models/comment.entity";
 
 export const myDataSource = new DataSource({
   type: "postgres",
-  host: "localhost",
+  host: "otusdb",
   port: 5432,
   username: "postgres",
   password: "Pr0ten0t",
