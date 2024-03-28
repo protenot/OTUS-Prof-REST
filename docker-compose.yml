@@ -2,7 +2,10 @@ version: "3.8"
 
 services:
   otusdb:
-    image: postgres
+    container_name: otusdb-container
+    image: postgres:alpine
+    deploy:
+      mode: global
     restart: unless-stopped
     tty: true
     environment:
@@ -15,22 +18,24 @@ services:
       - otusdb:/var/lib/postgresql/data
 
   app:
+    container_name: app-container
     image: node:18
-    build: .
-    
+    build:
+      context: .
+      dockerfile: Dockerfile
+
     ports:
       - 3000:3000
     depends_on:
       - otusdb
-        
+
     environment:
-      - NODE_ENV=production  # Устанавливаем переменную среды
-      - PORT=3000  # Устанавливаем порт для приложения
-      - DB_HOST=${DATABASE}  # Устанавливаем хост для подключения к базе данных
-      - DB_USER=${DB_USERNAME}  # Устанавливаем имя пользователя базы данных
-      - DB_PASSWORD=${DB_PASSWORD}  # Устанавливаем пароль для подключения к базе данных
-      - DB_NAME=otusdb  # Устанавливаем имя базы данных
-    
+      - NODE_ENV=development
+      - PORT=3000
+      - DB_HOST=${DATABASE}
+      - DB_USER=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=otusdb
+      - SESSION_SECRET=${SESSION_SECRET}
 volumes:
   otusdb:
-    

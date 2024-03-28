@@ -5,6 +5,7 @@ import { userRepository } from "../repositories/users.repository";
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log("userRepository", userRepository.target);
     const result = await userRepository.find({
       select: {
         id: true,
@@ -15,8 +16,8 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
       order: { name: "ASC" },
     });
-
-    res.send(result);
+    console.log("result", result);
+    res.json(result);
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ error: "Failed to fetch users" });
